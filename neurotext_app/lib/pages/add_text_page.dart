@@ -38,7 +38,13 @@ class _AddTextPageState extends State<AddTextPage> {
   void _startReading() {
     if (_controller.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Lütfen okumak istediğiniz metni girin')),
+        SnackBar(
+          content: Text('Lütfen okumak istediğiniz metni girin'),
+          backgroundColor: Colors.orange[600],
+          behavior: SnackBarBehavior.floating,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        ),
       );
       return;
     }
@@ -55,19 +61,24 @@ class _AddTextPageState extends State<AddTextPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Metni Temizle'),
+        backgroundColor: Colors.white.withOpacity(0.95),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Text('Metni Temizle',
+            style: TextStyle(fontWeight: FontWeight.w600)),
         content: Text('Girdiğiniz metin silinecek. Emin misiniz?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Text('İptal'),
+            child: Text('İptal', style: TextStyle(color: Colors.grey[600])),
           ),
           TextButton(
             onPressed: () {
               _controller.clear();
               Navigator.of(context).pop();
             },
-            child: Text('Temizle'),
+            child: Text('Temizle',
+                style: TextStyle(
+                    color: Colors.red[600], fontWeight: FontWeight.w600)),
           ),
         ],
       ),
@@ -76,154 +87,489 @@ class _AddTextPageState extends State<AddTextPage> {
 
   @override
   Widget build(BuildContext context) {
+    final wordCount = _controller.text
+        .split(RegExp(r'\s+'))
+        .where((word) => word.isNotEmpty)
+        .length;
+    final readingTime = (wordCount / 200).ceil();
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Metin Girişi'),
-        backgroundColor: Colors.blue[700],
-        actions: [
-          if (!_isTextEmpty)
-            IconButton(
-              onPressed: _clearText,
-              icon: Icon(Icons.clear),
-              tooltip: 'Metni Temizle',
-            ),
-          IconButton(
-            onPressed: _isTextEmpty ? null : _startReading,
-            icon: Icon(Icons.play_circle_filled),
-            tooltip: 'Okumaya Başla',
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color(0xFF1E3C72),
+              Color(0xFF2A5298),
+              Color(0xFF3B82F6),
+            ],
           ),
-          SizedBox(width: 8),
-        ],
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Başlık ve bilgi
-            Card(
-              child: Padding(
-                padding: EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+        ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              // Modern Header
+              Container(
+                padding: EdgeInsets.fromLTRB(20, 16, 20, 24),
+                child: Row(
                   children: [
-                    Row(
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(12),
+                        border:
+                            Border.all(color: Colors.white.withOpacity(0.3)),
+                      ),
+                      child: IconButton(
+                        icon: Icon(Icons.arrow_back,
+                            color: Colors.white, size: 20),
+                        onPressed: () => Navigator.of(context).pop(),
+                        padding: EdgeInsets.zero,
+                      ),
+                    ),
+                    SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Metin Girişi',
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.white,
+                              letterSpacing: -0.5,
+                            ),
+                          ),
+                          Text(
+                            'Okumak istediğiniz metni yazın',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.white.withOpacity(0.8),
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    if (!_isTextEmpty) ...[
+                      Container(
+                        margin: EdgeInsets.only(right: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(12),
+                          border:
+                              Border.all(color: Colors.white.withOpacity(0.3)),
+                        ),
+                        child: IconButton(
+                          onPressed: _clearText,
+                          icon:
+                              Icon(Icons.clear, color: Colors.white, size: 20),
+                          tooltip: 'Metni Temizle',
+                        ),
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [Colors.green[400]!, Colors.teal[400]!],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.green[300]!.withOpacity(0.3),
+                              blurRadius: 8,
+                              offset: Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: IconButton(
+                          onPressed: _startReading,
+                          icon: Icon(Icons.play_circle_filled,
+                              color: Colors.white, size: 24),
+                          tooltip: 'Okumaya Başla',
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+
+              // Content Area
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.grey[50],
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(30),
+                      topRight: Radius.circular(30),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.all(24),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        Icon(Icons.info_outline, color: Colors.blue[600]),
-                        SizedBox(width: 8),
-                        Text(
-                          'Neuro Text Reader',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.blue[700],
+                        // Özellik kartları
+                        Container(
+                          padding: EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.05),
+                                blurRadius: 20,
+                                offset: Offset(0, 5),
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Container(
+                                    width: 48,
+                                    height: 48,
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          Colors.blue[400]!,
+                                          Colors.purple[400]!
+                                        ],
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                      ),
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    child: Icon(Icons.auto_stories,
+                                        color: Colors.white, size: 24),
+                                  ),
+                                  SizedBox(width: 16),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Neuro Text Reader',
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w700,
+                                            color: Colors.grey[800],
+                                            letterSpacing: -0.5,
+                                          ),
+                                        ),
+                                        Text(
+                                          'Gelişmiş okuma deneyimi için hazır',
+                                          style: TextStyle(
+                                            color: Colors.grey[600],
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 20),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Container(
+                                      padding: EdgeInsets.all(12),
+                                      decoration: BoxDecoration(
+                                        color: Colors.blue[50],
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          Text('🌈',
+                                              style: TextStyle(fontSize: 20)),
+                                          SizedBox(height: 4),
+                                          Text(
+                                            'Gradient\nGeçişler',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.blue[700],
+                                              height: 1.2,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(width: 12),
+                                  Expanded(
+                                    child: Container(
+                                      padding: EdgeInsets.all(12),
+                                      decoration: BoxDecoration(
+                                        color: Colors.purple[50],
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          Text('💪',
+                                              style: TextStyle(fontSize: 20)),
+                                          SizedBox(height: 4),
+                                          Text(
+                                            'Biyonik\nOkuma',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.purple[700],
+                                              height: 1.2,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(width: 12),
+                                  Expanded(
+                                    child: Container(
+                                      padding: EdgeInsets.all(12),
+                                      decoration: BoxDecoration(
+                                        color: Colors.green[50],
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          Text('🚀',
+                                              style: TextStyle(fontSize: 20)),
+                                          SizedBox(height: 4),
+                                          Text(
+                                            'Otomatik\nKaydırma',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.green[700],
+                                              height: 1.2,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        SizedBox(height: 24),
+
+                        // Metin girişi alanı
+                        Expanded(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.05),
+                                  blurRadius: 20,
+                                  offset: Offset(0, 5),
+                                ),
+                              ],
+                            ),
+                            child: TextField(
+                              controller: _controller,
+                              maxLines: null,
+                              expands: true,
+                              textAlignVertical: TextAlignVertical.top,
+                              decoration: InputDecoration(
+                                hintText:
+                                    'Okumak istediğiniz metni buraya yazın...\n\nÖrnek:\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n\nUt enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+                                hintStyle: TextStyle(
+                                  color: Colors.grey[400],
+                                  fontSize: 16,
+                                  height: 1.5,
+                                ),
+                                border: InputBorder.none,
+                                contentPadding: EdgeInsets.all(24),
+                              ),
+                              style: TextStyle(
+                                fontSize: 16,
+                                height: 1.6,
+                                color: Colors.grey[800],
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        // İstatistikler
+                        if (!_isTextEmpty) ...[
+                          SizedBox(height: 20),
+                          Container(
+                            padding: EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(16),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.05),
+                                  blurRadius: 15,
+                                  offset: Offset(0, 3),
+                                ),
+                              ],
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 12, vertical: 8),
+                                  decoration: BoxDecoration(
+                                    color: Colors.blue[50],
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(Icons.text_fields,
+                                          size: 16, color: Colors.blue[600]),
+                                      SizedBox(width: 6),
+                                      Text(
+                                        '$wordCount kelime',
+                                        style: TextStyle(
+                                          color: Colors.blue[600],
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(width: 12),
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 12, vertical: 8),
+                                  decoration: BoxDecoration(
+                                    color: Colors.purple[50],
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(Icons.text_snippet,
+                                          size: 16, color: Colors.purple[600]),
+                                      SizedBox(width: 6),
+                                      Text(
+                                        '${_controller.text.length} karakter',
+                                        style: TextStyle(
+                                          color: Colors.purple[600],
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Spacer(),
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 12, vertical: 8),
+                                  decoration: BoxDecoration(
+                                    color: Colors.green[50],
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(Icons.schedule,
+                                          size: 16, color: Colors.green[600]),
+                                      SizedBox(width: 6),
+                                      Text(
+                                        '~$readingTime dk',
+                                        style: TextStyle(
+                                          color: Colors.green[600],
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+
+                        SizedBox(height: 24),
+
+                        // Başlat butonu
+                        Container(
+                          height: 56,
+                          decoration: BoxDecoration(
+                            gradient: _isTextEmpty
+                                ? LinearGradient(colors: [
+                                    Colors.grey[300]!,
+                                    Colors.grey[400]!
+                                  ])
+                                : LinearGradient(
+                                    colors: [
+                                      Colors.blue[600]!,
+                                      Colors.purple[600]!
+                                    ],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                  ),
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: _isTextEmpty
+                                ? []
+                                : [
+                                    BoxShadow(
+                                      color: Colors.blue[300]!.withOpacity(0.4),
+                                      blurRadius: 20,
+                                      offset: Offset(0, 8),
+                                    ),
+                                  ],
+                          ),
+                          child: ElevatedButton.icon(
+                            onPressed: _isTextEmpty ? null : _startReading,
+                            icon: Icon(
+                                _isTextEmpty
+                                    ? Icons.edit_note
+                                    : Icons.auto_stories,
+                                size: 24),
+                            label: Text(
+                              _isTextEmpty
+                                  ? 'Önce metin yazın'
+                                  : 'Okumaya Başla',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: -0.5,
+                              ),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.transparent,
+                              foregroundColor: _isTextEmpty
+                                  ? Colors.grey[600]
+                                  : Colors.white,
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                            ),
                           ),
                         ),
                       ],
                     ),
-                    SizedBox(height: 8),
-                    Text(
-                      'Gelişmiş okuma deneyimi için metninizi girin:',
-                      style: TextStyle(color: Colors.grey[600]),
-                    ),
-                    SizedBox(height: 8),
-                    Wrap(
-                      spacing: 8,
-                      children: [
-                        Chip(
-                          label: Text('🌈 Gradient Geçişler'),
-                          labelStyle: TextStyle(fontSize: 12),
-                        ),
-                        Chip(
-                          label: Text('💪 Biyonik Okuma'),
-                          labelStyle: TextStyle(fontSize: 12),
-                        ),
-                        Chip(
-                          label: Text('🚀 Otomatik Kaydırma'),
-                          labelStyle: TextStyle(fontSize: 12),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-            SizedBox(height: 16),
-
-            // Metin girişi alanı
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey[300]!),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: TextField(
-                  controller: _controller,
-                  maxLines: null,
-                  expands: true,
-                  textAlignVertical: TextAlignVertical.top,
-                  decoration: InputDecoration(
-                    hintText:
-                        'Okumak istediğiniz metni buraya yazın...\n\nÖrnek:\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n\nUt enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-                    hintStyle: TextStyle(color: Colors.grey[400]),
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.all(16),
-                  ),
-                  style: TextStyle(
-                    fontSize: 16,
-                    height: 1.5,
                   ),
                 ),
               ),
-            ),
-
-            SizedBox(height: 16),
-
-            // Kelime/karakter sayısı
-            if (!_isTextEmpty)
-              Card(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  child: Row(
-                    children: [
-                      Icon(Icons.text_fields,
-                          size: 16, color: Colors.grey[600]),
-                      SizedBox(width: 8),
-                      Text(
-                        '${_controller.text.split(RegExp(r'\s+')).where((word) => word.isNotEmpty).length} kelime, ${_controller.text.length} karakter',
-                        style: TextStyle(color: Colors.grey[600], fontSize: 12),
-                      ),
-                      Spacer(),
-                      Text(
-                        'Tahmini okuma süresi: ${(_controller.text.split(RegExp(r'\s+')).where((word) => word.isNotEmpty).length / 200).ceil()} dk',
-                        style: TextStyle(color: Colors.grey[600], fontSize: 12),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-            SizedBox(height: 16),
-
-            // Başlat butonu
-            ElevatedButton.icon(
-              onPressed: _isTextEmpty ? null : _startReading,
-              icon: Icon(Icons.auto_stories),
-              label: Text(
-                'Okumaya Başla',
-                style: TextStyle(fontSize: 16),
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue[600],
-                foregroundColor: Colors.white,
-                padding: EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -79,17 +79,22 @@ class _HomePageState extends State<HomePage> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Makaleyi Sil'),
+        backgroundColor: Colors.white.withOpacity(0.95),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title:
+            Text('Makaleyi Sil', style: TextStyle(fontWeight: FontWeight.w600)),
         content: Text(
             '${article.title} adlı makaleyi silmek istediğinizden emin misiniz?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: Text('İptal'),
+            child: Text('İptal', style: TextStyle(color: Colors.grey[600])),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: Text('Sil', style: TextStyle(color: Colors.red)),
+            child: Text('Sil',
+                style: TextStyle(
+                    color: Colors.red[600], fontWeight: FontWeight.w600)),
           ),
         ],
       ),
@@ -100,11 +105,23 @@ class _HomePageState extends State<HomePage> {
         await ArticleService.deleteArticle(article.id);
         _loadArticles();
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Makale silindi')),
+          SnackBar(
+            content: Text('Makale silindi'),
+            backgroundColor: Colors.green[600],
+            behavior: SnackBarBehavior.floating,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ),
         );
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Makale silinemedi: $e')),
+          SnackBar(
+            content: Text('Makale silinemedi: $e'),
+            backgroundColor: Colors.red[600],
+            behavior: SnackBarBehavior.floating,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ),
         );
       }
     }
@@ -116,17 +133,22 @@ class _HomePageState extends State<HomePage> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Tüm Makaleleri Sil'),
+        backgroundColor: Colors.white.withOpacity(0.95),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Text('Tüm Makaleleri Sil',
+            style: TextStyle(fontWeight: FontWeight.w600)),
         content: Text(
             '${_articles.length} makaleyi silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: Text('İptal'),
+            child: Text('İptal', style: TextStyle(color: Colors.grey[600])),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: Text('Tümünü Sil', style: TextStyle(color: Colors.red)),
+            child: Text('Tümünü Sil',
+                style: TextStyle(
+                    color: Colors.red[600], fontWeight: FontWeight.w600)),
           ),
         ],
       ),
@@ -137,11 +159,23 @@ class _HomePageState extends State<HomePage> {
         await ArticleService.clearAllArticles();
         _loadArticles();
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Tüm makaleler silindi')),
+          SnackBar(
+            content: Text('Tüm makaleler silindi'),
+            backgroundColor: Colors.green[600],
+            behavior: SnackBarBehavior.floating,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ),
         );
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Makaleler silinemedi: $e')),
+          SnackBar(
+            content: Text('Makaleler silinemedi: $e'),
+            backgroundColor: Colors.red[600],
+            behavior: SnackBarBehavior.floating,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ),
         );
       }
     }
@@ -176,37 +210,73 @@ class _HomePageState extends State<HomePage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.auto_stories_outlined,
-            size: 100,
-            color: Colors.grey[400],
-          ),
-          SizedBox(height: 24),
-          Text(
-            'Henüz Makale Yok',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.w600,
-              color: Colors.grey[600],
+          Container(
+            width: 120,
+            height: 120,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.blue[200]!, Colors.purple[200]!],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(60),
             ),
-          ),
-          SizedBox(height: 8),
-          Text(
-            'İlk metninizi ekleyerek başlayın',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey[500],
+            child: Icon(
+              Icons.auto_stories_outlined,
+              size: 60,
+              color: Colors.white,
             ),
           ),
           SizedBox(height: 32),
-          ElevatedButton.icon(
-            onPressed: _openAddTextPage,
-            icon: Icon(Icons.add),
-            label: Text('İlk Metni Ekle'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.blue[600],
-              foregroundColor: Colors.white,
-              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          Text(
+            'Henüz Makale Yok',
+            style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.w700,
+              color: Colors.grey[800],
+              letterSpacing: -0.5,
+            ),
+          ),
+          SizedBox(height: 12),
+          Text(
+            'İlk metninizi ekleyerek\ngelişmiş okuma deneyimini başlayın',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey[600],
+              height: 1.4,
+            ),
+          ),
+          SizedBox(height: 40),
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.blue[600]!, Colors.purple[600]!],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(25),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.blue[300]!.withOpacity(0.4),
+                  blurRadius: 20,
+                  offset: Offset(0, 10),
+                ),
+              ],
+            ),
+            child: ElevatedButton.icon(
+              onPressed: _openAddTextPage,
+              icon: Icon(Icons.add, size: 24),
+              label: Text('İlk Metni Ekle',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.transparent,
+                foregroundColor: Colors.white,
+                elevation: 0,
+                padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25)),
+              ),
             ),
           ),
         ],
@@ -219,26 +289,39 @@ class _HomePageState extends State<HomePage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.search_off,
-            size: 80,
-            color: Colors.grey[400],
+          Container(
+            width: 100,
+            height: 100,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.orange[200]!, Colors.red[200]!],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(50),
+            ),
+            child: Icon(
+              Icons.search_off,
+              size: 50,
+              color: Colors.white,
+            ),
           ),
-          SizedBox(height: 16),
+          SizedBox(height: 24),
           Text(
             'Sonuç Bulunamadı',
             style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
-              color: Colors.grey[600],
+              fontSize: 24,
+              fontWeight: FontWeight.w700,
+              color: Colors.grey[800],
+              letterSpacing: -0.5,
             ),
           ),
           SizedBox(height: 8),
           Text(
             '"${_searchController.text}" için sonuç bulunamadı',
             style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey[500],
+              fontSize: 16,
+              color: Colors.grey[600],
             ),
           ),
         ],
@@ -249,241 +332,496 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Neuro Text Reader'),
-        backgroundColor: Colors.blue[700],
-        actions: [
-          if (_articles.isNotEmpty)
-            PopupMenuButton(
-              icon: Icon(Icons.more_vert),
-              itemBuilder: (context) => [
-                PopupMenuItem(
-                  value: 'delete_all',
-                  child: Row(
-                    children: [
-                      Icon(Icons.delete_forever, color: Colors.red),
-                      SizedBox(width: 8),
-                      Text('Tümünü Sil'),
-                    ],
-                  ),
-                ),
-              ],
-              onSelected: (value) {
-                if (value == 'delete_all') {
-                  _deleteAllArticles();
-                }
-              },
-            ),
-        ],
-      ),
-      body: _isLoading
-          ? Center(child: CircularProgressIndicator())
-          : Column(
-              children: [
-                // Üst bilgi kartı
-                Container(
-                  width: double.infinity,
-                  margin: EdgeInsets.all(16),
-                  child: Card(
-                    elevation: 2,
-                    child: Padding(
-                      padding: EdgeInsets.all(16),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color(0xFF1E3C72),
+              Color(0xFF2A5298),
+              Color(0xFF3B82F6),
+            ],
+          ),
+        ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              // Modern Header
+              Container(
+                padding: EdgeInsets.fromLTRB(20, 16, 20, 24),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(16),
+                        border:
+                            Border.all(color: Colors.white.withOpacity(0.3)),
+                      ),
+                      child: Icon(Icons.auto_stories,
+                          color: Colors.white, size: 24),
+                    ),
+                    SizedBox(width: 16),
+                    Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
-                            children: [
-                              Icon(Icons.auto_stories,
-                                  color: Colors.blue[600], size: 28),
-                              SizedBox(width: 12),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Kaydedilen Makaleler',
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.blue[700],
-                                      ),
-                                    ),
-                                    Text(
-                                      '${_articles.length} makale • Gelişmiş okuma deneyimi',
-                                      style: TextStyle(
-                                        color: Colors.grey[600],
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              ElevatedButton.icon(
-                                onPressed: _openAddTextPage,
-                                icon: Icon(Icons.add),
-                                label: Text('Yeni'),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.blue[600],
-                                  foregroundColor: Colors.white,
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 16, vertical: 8),
-                                ),
-                              ),
-                            ],
+                          Text(
+                            'Neuro Text',
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.white,
+                              letterSpacing: -0.5,
+                            ),
+                          ),
+                          Text(
+                            '${_articles.length} Makale • Gelişmiş Okuma',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.white.withOpacity(0.8),
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                         ],
                       ),
                     ),
-                  ),
-                ),
-
-                // Arama barı
-                if (_articles.isNotEmpty)
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: TextField(
-                      controller: _searchController,
-                      decoration: InputDecoration(
-                        hintText: 'Makalelerde ara...',
-                        prefixIcon: Icon(Icons.search),
-                        suffixIcon: _searchController.text.isNotEmpty
-                            ? IconButton(
-                                icon: Icon(Icons.clear),
-                                onPressed: () {
-                                  _searchController.clear();
-                                },
-                              )
-                            : null,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
+                    if (_articles.isNotEmpty)
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(12),
+                          border:
+                              Border.all(color: Colors.white.withOpacity(0.3)),
                         ),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                        child: PopupMenuButton(
+                          icon: Icon(Icons.more_vert, color: Colors.white),
+                          itemBuilder: (context) => [
+                            PopupMenuItem(
+                              value: 'delete_all',
+                              child: Row(
+                                children: [
+                                  Icon(Icons.delete_forever, color: Colors.red),
+                                  SizedBox(width: 8),
+                                  Text('Tümünü Sil'),
+                                ],
+                              ),
+                            ),
+                          ],
+                          onSelected: (value) {
+                            if (value == 'delete_all') {
+                              _deleteAllArticles();
+                            }
+                          },
+                        ),
                       ),
+                  ],
+                ),
+              ),
+
+              // Content Area
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.grey[50],
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(30),
+                      topRight: Radius.circular(30),
                     ),
                   ),
-
-                SizedBox(height: 16),
-
-                // Makale listesi veya boş durum
-                Expanded(
-                  child: _articles.isEmpty
-                      ? _buildEmptyState()
-                      : _filteredArticles.isEmpty
-                          ? _buildNoResultsState()
-                          : ListView.builder(
-                              padding: EdgeInsets.symmetric(horizontal: 16),
-                              itemCount: _filteredArticles.length,
-                              itemBuilder: (context, index) {
-                                final article = _filteredArticles[index];
-                                final wordCount =
-                                    _getWordCount(article.content);
-                                final readingTime =
-                                    _getReadingTime(article.content);
-
-                                return Card(
-                                  margin: EdgeInsets.only(bottom: 12),
-                                  child: ListTile(
-                                    contentPadding: EdgeInsets.all(16),
-                                    leading: CircleAvatar(
-                                      backgroundColor: Colors.blue[100],
-                                      child: Icon(
-                                        Icons.article,
-                                        color: Colors.blue[600],
-                                      ),
-                                    ),
-                                    title: Text(
-                                      article.title,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 16,
-                                      ),
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    subtitle: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        SizedBox(height: 8),
-                                        Text(
-                                          article.content,
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                              color: Colors.grey[600]),
-                                        ),
-                                        SizedBox(height: 8),
-                                        Row(
-                                          children: [
-                                            Icon(Icons.schedule,
-                                                size: 14,
-                                                color: Colors.grey[500]),
-                                            SizedBox(width: 4),
-                                            Text(
-                                              '$readingTime dk',
-                                              style: TextStyle(
-                                                color: Colors.grey[500],
-                                                fontSize: 12,
-                                              ),
-                                            ),
-                                            SizedBox(width: 12),
-                                            Icon(Icons.text_fields,
-                                                size: 14,
-                                                color: Colors.grey[500]),
-                                            SizedBox(width: 4),
-                                            Text(
-                                              '$wordCount kelime',
-                                              style: TextStyle(
-                                                color: Colors.grey[500],
-                                                fontSize: 12,
-                                              ),
-                                            ),
-                                            Spacer(),
-                                            Text(
-                                              _getRelativeTime(
-                                                  article.createdAt),
-                                              style: TextStyle(
-                                                color: Colors.grey[500],
-                                                fontSize: 12,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                    trailing: PopupMenuButton(
-                                      itemBuilder: (context) => [
-                                        PopupMenuItem(
-                                          value: 'delete',
-                                          child: Row(
-                                            children: [
-                                              Icon(Icons.delete,
-                                                  color: Colors.red),
-                                              SizedBox(width: 8),
-                                              Text('Sil'),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                      onSelected: (value) {
-                                        if (value == 'delete') {
-                                          _deleteArticle(article);
-                                        }
-                                      },
-                                    ),
-                                    onTap: () => _openTextReader(article),
-                                  ),
-                                );
-                              },
+                  child: _isLoading
+                      ? Center(
+                          child: Container(
+                            width: 60,
+                            height: 60,
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  Colors.blue[600]!,
+                                  Colors.purple[600]!
+                                ],
+                              ),
+                              borderRadius: BorderRadius.circular(30),
                             ),
+                            child: Center(
+                              child: CircularProgressIndicator(
+                                valueColor:
+                                    AlwaysStoppedAnimation<Color>(Colors.white),
+                              ),
+                            ),
+                          ),
+                        )
+                      : Column(
+                          children: [
+                            SizedBox(height: 24),
+
+                            // Arama barı
+                            if (_articles.isNotEmpty)
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 20),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(20),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.05),
+                                        blurRadius: 20,
+                                        offset: Offset(0, 5),
+                                      ),
+                                    ],
+                                  ),
+                                  child: TextField(
+                                    controller: _searchController,
+                                    decoration: InputDecoration(
+                                      hintText: 'Makalelerde ara...',
+                                      hintStyle:
+                                          TextStyle(color: Colors.grey[400]),
+                                      prefixIcon: Icon(Icons.search,
+                                          color: Colors.grey[400], size: 24),
+                                      suffixIcon:
+                                          _searchController.text.isNotEmpty
+                                              ? IconButton(
+                                                  icon: Icon(Icons.clear,
+                                                      color: Colors.grey[400]),
+                                                  onPressed: () {
+                                                    _searchController.clear();
+                                                  },
+                                                )
+                                              : null,
+                                      border: InputBorder.none,
+                                      contentPadding: EdgeInsets.symmetric(
+                                          horizontal: 20, vertical: 16),
+                                    ),
+                                  ),
+                                ),
+                              ),
+
+                            SizedBox(height: 20),
+
+                            // Makale listesi veya boş durum
+                            Expanded(
+                              child: _articles.isEmpty
+                                  ? _buildEmptyState()
+                                  : _filteredArticles.isEmpty
+                                      ? _buildNoResultsState()
+                                      : ListView.builder(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 20),
+                                          itemCount: _filteredArticles.length,
+                                          itemBuilder: (context, index) {
+                                            final article =
+                                                _filteredArticles[index];
+                                            final wordCount =
+                                                _getWordCount(article.content);
+                                            final readingTime = _getReadingTime(
+                                                article.content);
+
+                                            return Container(
+                                              margin:
+                                                  EdgeInsets.only(bottom: 16),
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.black
+                                                        .withOpacity(0.06),
+                                                    blurRadius: 20,
+                                                    offset: Offset(0, 8),
+                                                  ),
+                                                ],
+                                              ),
+                                              child: Material(
+                                                color: Colors.transparent,
+                                                child: InkWell(
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                  onTap: () =>
+                                                      _openTextReader(article),
+                                                  child: Padding(
+                                                    padding: EdgeInsets.all(20),
+                                                    child: Row(
+                                                      children: [
+                                                        Container(
+                                                          width: 60,
+                                                          height: 60,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            gradient:
+                                                                LinearGradient(
+                                                              colors: [
+                                                                Colors
+                                                                    .blue[400]!,
+                                                                Colors.purple[
+                                                                    400]!,
+                                                              ],
+                                                              begin: Alignment
+                                                                  .topLeft,
+                                                              end: Alignment
+                                                                  .bottomRight,
+                                                            ),
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        16),
+                                                          ),
+                                                          child: Icon(
+                                                            Icons.article,
+                                                            color: Colors.white,
+                                                            size: 28,
+                                                          ),
+                                                        ),
+                                                        SizedBox(width: 16),
+                                                        Expanded(
+                                                          child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              Text(
+                                                                article.title,
+                                                                style:
+                                                                    TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w700,
+                                                                  fontSize: 18,
+                                                                  color: Colors
+                                                                          .grey[
+                                                                      800],
+                                                                  letterSpacing:
+                                                                      -0.5,
+                                                                ),
+                                                                maxLines: 2,
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                              ),
+                                                              SizedBox(
+                                                                  height: 8),
+                                                              Text(
+                                                                article.content,
+                                                                maxLines: 2,
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                          .grey[
+                                                                      600],
+                                                                  fontSize: 14,
+                                                                  height: 1.4,
+                                                                ),
+                                                              ),
+                                                              SizedBox(
+                                                                  height: 12),
+                                                              Row(
+                                                                children: [
+                                                                  Container(
+                                                                    padding: EdgeInsets.symmetric(
+                                                                        horizontal:
+                                                                            8,
+                                                                        vertical:
+                                                                            4),
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      color: Colors
+                                                                          .blue[50],
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              8),
+                                                                    ),
+                                                                    child: Row(
+                                                                      mainAxisSize:
+                                                                          MainAxisSize
+                                                                              .min,
+                                                                      children: [
+                                                                        Icon(
+                                                                            Icons
+                                                                                .schedule,
+                                                                            size:
+                                                                                12,
+                                                                            color:
+                                                                                Colors.blue[600]),
+                                                                        SizedBox(
+                                                                            width:
+                                                                                4),
+                                                                        Text(
+                                                                          '$readingTime dk',
+                                                                          style:
+                                                                              TextStyle(
+                                                                            color:
+                                                                                Colors.blue[600],
+                                                                            fontSize:
+                                                                                12,
+                                                                            fontWeight:
+                                                                                FontWeight.w600,
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(
+                                                                      width: 8),
+                                                                  Container(
+                                                                    padding: EdgeInsets.symmetric(
+                                                                        horizontal:
+                                                                            8,
+                                                                        vertical:
+                                                                            4),
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      color: Colors
+                                                                          .purple[50],
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              8),
+                                                                    ),
+                                                                    child: Row(
+                                                                      mainAxisSize:
+                                                                          MainAxisSize
+                                                                              .min,
+                                                                      children: [
+                                                                        Icon(
+                                                                            Icons
+                                                                                .text_fields,
+                                                                            size:
+                                                                                12,
+                                                                            color:
+                                                                                Colors.purple[600]),
+                                                                        SizedBox(
+                                                                            width:
+                                                                                4),
+                                                                        Text(
+                                                                          '$wordCount',
+                                                                          style:
+                                                                              TextStyle(
+                                                                            color:
+                                                                                Colors.purple[600],
+                                                                            fontSize:
+                                                                                12,
+                                                                            fontWeight:
+                                                                                FontWeight.w600,
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                  Spacer(),
+                                                                  Text(
+                                                                    _getRelativeTime(
+                                                                        article
+                                                                            .createdAt),
+                                                                    style:
+                                                                        TextStyle(
+                                                                      color: Colors
+                                                                              .grey[
+                                                                          500],
+                                                                      fontSize:
+                                                                          12,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w500,
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        Container(
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            color:
+                                                                Colors.grey[50],
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        12),
+                                                          ),
+                                                          child:
+                                                              PopupMenuButton(
+                                                            icon: Icon(
+                                                                Icons.more_vert,
+                                                                color: Colors
+                                                                    .grey[600]),
+                                                            itemBuilder:
+                                                                (context) => [
+                                                              PopupMenuItem(
+                                                                value: 'delete',
+                                                                child: Row(
+                                                                  children: [
+                                                                    Icon(
+                                                                        Icons
+                                                                            .delete,
+                                                                        color: Colors
+                                                                            .red[600]),
+                                                                    SizedBox(
+                                                                        width:
+                                                                            8),
+                                                                    Text('Sil'),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ],
+                                                            onSelected:
+                                                                (value) {
+                                                              if (value ==
+                                                                  'delete') {
+                                                                _deleteArticle(
+                                                                    article);
+                                                              }
+                                                            },
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        ),
+                            ),
+                          ],
+                        ),
                 ),
-              ],
+              ),
+            ],
+          ),
+        ),
+      ),
+      floatingActionButton: Container(
+        width: 64,
+        height: 64,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.blue[600]!, Colors.purple[600]!],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(32),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.blue[300]!.withOpacity(0.4),
+              blurRadius: 20,
+              offset: Offset(0, 8),
             ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _openAddTextPage,
-        child: Icon(Icons.add),
-        backgroundColor: Colors.blue[600],
-        tooltip: 'Yeni Metin Ekle',
+          ],
+        ),
+        child: FloatingActionButton(
+          onPressed: _openAddTextPage,
+          child: Icon(Icons.add, size: 28),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          tooltip: 'Yeni Metin Ekle',
+        ),
       ),
     );
   }

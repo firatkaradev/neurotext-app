@@ -24,9 +24,14 @@ class _TextReaderPageState extends State<TextReaderPage> {
 
   // Speed modes
   final List<Map<String, dynamic>> _speedModes = [
-    {'name': 'Slow', 'speed': 1.0, 'icon': Icons.trending_down},
-    {'name': 'Normal', 'speed': 3.0, 'icon': Icons.trending_flat},
-    {'name': 'Fast', 'speed': 5.0, 'icon': Icons.trending_up},
+    {'name': 'Yavaş', 'speed': 1.0, 'icon': Icons.speed, 'color': Colors.green},
+    {'name': 'Normal', 'speed': 3.0, 'icon': Icons.speed, 'color': Colors.blue},
+    {
+      'name': 'Hızlı',
+      'speed': 5.0,
+      'icon': Icons.speed,
+      'color': Colors.orange
+    },
   ];
   int _currentSpeedIndex = 1; // Normal başlangıç
 
@@ -185,7 +190,13 @@ class _TextReaderPageState extends State<TextReaderPage> {
   void _saveCurrentArticle() async {
     if (_displayText.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Kaydedilecek metin bulunamadı')),
+        SnackBar(
+          content: Text('Kaydedilecek metin bulunamadı'),
+          backgroundColor: Colors.orange[600],
+          behavior: SnackBarBehavior.floating,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        ),
       );
       return;
     }
@@ -197,12 +208,22 @@ class _TextReaderPageState extends State<TextReaderPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Makale kaydedildi: ${article.title}'),
+          backgroundColor: Colors.green[600],
+          behavior: SnackBarBehavior.floating,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           duration: Duration(seconds: 2),
         ),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Makale kaydedilemedi: $e')),
+        SnackBar(
+          content: Text('Makale kaydedilemedi: $e'),
+          backgroundColor: Colors.red[600],
+          behavior: SnackBarBehavior.floating,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        ),
       );
     }
   }
@@ -210,34 +231,109 @@ class _TextReaderPageState extends State<TextReaderPage> {
   Widget _buildStatusIndicator() {
     if (_isPaused && _isAutoScrolling) {
       return Container(
-        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: Colors.orange[100],
-          borderRadius: BorderRadius.circular(12),
+          gradient: LinearGradient(
+            colors: [Colors.orange[400]!, Colors.amber[400]!],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.orange[200]!.withOpacity(0.5),
+              blurRadius: 15,
+              offset: Offset(0, 5),
+            ),
+          ],
         ),
-        child: Text('⏸️ Odaklanma Modu',
-            style: TextStyle(color: Colors.orange[800], fontSize: 12)),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.pause_circle, color: Colors.white, size: 20),
+            SizedBox(width: 8),
+            Text(
+              'Odaklanma Modu',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
       );
     } else if (_isManualScrolling) {
       return Container(
-        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: Colors.blue[100],
-          borderRadius: BorderRadius.circular(12),
+          gradient: LinearGradient(
+            colors: [Colors.blue[400]!, Colors.cyan[400]!],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.blue[200]!.withOpacity(0.5),
+              blurRadius: 15,
+              offset: Offset(0, 5),
+            ),
+          ],
         ),
-        child: Text('✋ Manuel Gezinme',
-            style: TextStyle(color: Colors.blue[800], fontSize: 12)),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.touch_app, color: Colors.white, size: 20),
+            SizedBox(width: 8),
+            Text(
+              'Manuel Gezinme',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
       );
     } else if (_isAutoScrolling) {
       return Container(
-        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: Colors.green[100],
-          borderRadius: BorderRadius.circular(12),
+          gradient: LinearGradient(
+            colors: [
+              _speedModes[_currentSpeedIndex]['color'][400]!,
+              _speedModes[_currentSpeedIndex]['color'][500]!,
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: _speedModes[_currentSpeedIndex]['color'][200]!
+                  .withOpacity(0.5),
+              blurRadius: 15,
+              offset: Offset(0, 5),
+            ),
+          ],
         ),
-        child: Text(
-            '🚀 ${_speedModes[_currentSpeedIndex]['name']} Hızda Okuyorsunuz',
-            style: TextStyle(color: Colors.green[800], fontSize: 12)),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.rocket_launch, color: Colors.white, size: 20),
+            SizedBox(width: 8),
+            Text(
+              '${_speedModes[_currentSpeedIndex]['name']} Hızda Okuyorsunuz',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
       );
     } else {
       return Container(height: 24); // Boş alan
@@ -247,77 +343,198 @@ class _TextReaderPageState extends State<TextReaderPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Neuro Text Reader'),
-        backgroundColor: Colors.blue[700],
-        actions: [
-          // Save article button
-          if (_displayText.trim().isNotEmpty)
-            IconButton(
-              onPressed: _saveCurrentArticle,
-              icon: Icon(Icons.save),
-              tooltip: 'Makaleyi Kaydet',
-            ),
-          // Speed cycle button
-          IconButton(
-            onPressed: _cycleSpeed,
-            icon: Icon(_speedModes[_currentSpeedIndex]['icon']),
-            tooltip: _speedModes[_currentSpeedIndex]['name'],
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color(0xFF1E3C72),
+              Color(0xFF2A5298),
+              Color(0xFF3B82F6),
+            ],
           ),
-          // Start/Stop button
-          IconButton(
-            onPressed: _toggleAutoScroll,
-            icon: Icon(_getToggleIcon()),
-            tooltip: _getToggleTooltip(),
-          ),
-          SizedBox(width: 8),
-        ],
-      ),
-      body: Column(
-        children: [
-          SizedBox(height: 10),
-
-          // Status indicator - sadece durum göstergesi
-          _buildStatusIndicator(),
-          SizedBox(height: 20),
-
-          // Ana metin gösterici
-          Expanded(
-            child: Container(
-              margin: EdgeInsets.all(16),
-              padding: EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey[300]!),
-                borderRadius: BorderRadius.circular(8),
+        ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              // Modern Header
+              Container(
+                padding: EdgeInsets.fromLTRB(20, 16, 20, 24),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(12),
+                        border:
+                            Border.all(color: Colors.white.withOpacity(0.3)),
+                      ),
+                      child: IconButton(
+                        icon: Icon(Icons.arrow_back,
+                            color: Colors.white, size: 20),
+                        onPressed: () => Navigator.of(context).pop(),
+                        padding: EdgeInsets.zero,
+                      ),
+                    ),
+                    SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Neuro Reader',
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.white,
+                              letterSpacing: -0.5,
+                            ),
+                          ),
+                          Text(
+                            'Gelişmiş okuma deneyimi',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.white.withOpacity(0.8),
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    // Control buttons
+                    if (_displayText.trim().isNotEmpty) ...[
+                      Container(
+                        margin: EdgeInsets.only(right: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(12),
+                          border:
+                              Border.all(color: Colors.white.withOpacity(0.3)),
+                        ),
+                        child: IconButton(
+                          onPressed: _saveCurrentArticle,
+                          icon: Icon(Icons.bookmark_add,
+                              color: Colors.white, size: 20),
+                          tooltip: 'Makaleyi Kaydet',
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(right: 8),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              _speedModes[_currentSpeedIndex]['color'][400]!,
+                              _speedModes[_currentSpeedIndex]['color'][500]!,
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: _speedModes[_currentSpeedIndex]['color']
+                                      [300]!
+                                  .withOpacity(0.3),
+                              blurRadius: 8,
+                              offset: Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: IconButton(
+                          onPressed: _cycleSpeed,
+                          icon: Icon(_speedModes[_currentSpeedIndex]['icon'],
+                              color: Colors.white, size: 20),
+                          tooltip: _speedModes[_currentSpeedIndex]['name'],
+                        ),
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: _isAutoScrolling && !_isManualScrolling
+                                ? [Colors.red[400]!, Colors.pink[400]!]
+                                : [Colors.green[400]!, Colors.teal[400]!],
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: (_isAutoScrolling && !_isManualScrolling
+                                      ? Colors.red[300]!
+                                      : Colors.green[300]!)
+                                  .withOpacity(0.3),
+                              blurRadius: 8,
+                              offset: Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: IconButton(
+                          onPressed: _toggleAutoScroll,
+                          icon: Icon(_getToggleIcon(),
+                              color: Colors.white, size: 20),
+                          tooltip: _getToggleTooltip(),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
               ),
-              child: GestureDetector(
-                onLongPressStart: (_) {
-                  // Basılı tutma başladı - hızı 1/4'e düşür
-                  _pauseAutoScroll();
-                },
-                onLongPressEnd: (_) {
-                  // Basılı tutma bitti - normal hıza dön
-                  _resumeAutoScroll();
-                },
-                onPanStart: (_) {
-                  // Scroll hareketi başladı - manuel moda geç (odaklanma modu hariç)
-                  if (_isAutoScrolling && !_isManualScrolling && !_isPaused) {
-                    setState(() {
-                      _isManualScrolling = true;
-                    });
-                  }
-                },
-                child: SingleChildScrollView(
-                  controller: _scrollController,
-                  child: NeuroTextReader(
-                    text: _displayText,
-                    fontSize: 16,
+
+              // Status indicator
+              Center(child: _buildStatusIndicator()),
+              SizedBox(height: 16),
+
+              // Content Area
+              Expanded(
+                child: Container(
+                  margin: EdgeInsets.symmetric(horizontal: 20),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(25),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 30,
+                        offset: Offset(0, 10),
+                      ),
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(25),
+                    child: GestureDetector(
+                      onLongPressStart: (_) {
+                        // Basılı tutma başladı - hızı 1/4'e düşür
+                        _pauseAutoScroll();
+                      },
+                      onLongPressEnd: (_) {
+                        // Basılı tutma bitti - normal hıza dön
+                        _resumeAutoScroll();
+                      },
+                      onPanStart: (_) {
+                        // Scroll hareketi başladı - manuel moda geç (odaklanma modu hariç)
+                        if (_isAutoScrolling &&
+                            !_isManualScrolling &&
+                            !_isPaused) {
+                          setState(() {
+                            _isManualScrolling = true;
+                          });
+                        }
+                      },
+                      child: SingleChildScrollView(
+                        controller: _scrollController,
+                        padding: EdgeInsets.all(24),
+                        child: NeuroTextReader(
+                          text: _displayText,
+                          fontSize: 18,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ),
+              SizedBox(height: 20),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -368,11 +585,51 @@ class NeuroTextWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final textStyle = TextStyle(
       fontSize: fontSize,
-      color: Colors.black87,
-      height: 1.5,
+      color: Colors.grey[800],
+      height: 1.6,
+      letterSpacing: 0.3,
     );
 
-    if (text.trim().isEmpty) return Container();
+    if (text.trim().isEmpty) {
+      return Container(
+        padding: EdgeInsets.all(40),
+        child: Center(
+          child: Column(
+            children: [
+              Container(
+                width: 80,
+                height: 80,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Colors.grey[300]!, Colors.grey[400]!],
+                  ),
+                  borderRadius: BorderRadius.circular(40),
+                ),
+                child: Icon(Icons.text_snippet_outlined,
+                    size: 40, color: Colors.white),
+              ),
+              SizedBox(height: 24),
+              Text(
+                'Henüz metin yüklenmemiş',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.grey[600],
+                ),
+              ),
+              SizedBox(height: 8),
+              Text(
+                'Okumak istediğiniz metni ekleyin',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey[500],
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
 
     // Metni doğal satırlarına böl (Enter ile ayrılanlar)
     final naturalLines = text.split('\n');
