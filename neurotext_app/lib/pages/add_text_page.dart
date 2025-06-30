@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'text_reader_page.dart';
 
 class AddTextPage extends StatefulWidget {
@@ -13,6 +14,7 @@ class AddTextPage extends StatefulWidget {
 class _AddTextPageState extends State<AddTextPage> {
   final TextEditingController _controller = TextEditingController();
   bool _isTextEmpty = true;
+  bool _hasClipboardContent = false;
 
   @override
   void initState() {
@@ -27,12 +29,214 @@ class _AddTextPageState extends State<AddTextPage> {
         _isTextEmpty = _controller.text.trim().isEmpty;
       });
     });
+
+    _checkClipboard();
   }
 
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  Future<void> _checkClipboard() async {
+    try {
+      final clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
+      setState(() {
+        _hasClipboardContent = clipboardData?.text?.trim().isNotEmpty == true;
+      });
+    } catch (e) {
+      setState(() {
+        _hasClipboardContent = false;
+      });
+    }
+  }
+
+  Future<void> _pasteFromClipboard() async {
+    try {
+      final clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
+      final clipboardText = clipboardData?.text?.trim() ?? '';
+
+      if (clipboardText.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Panoda metin bulunamadı'),
+            backgroundColor: Colors.orange[600],
+            behavior: SnackBarBehavior.floating,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ),
+        );
+        return;
+      }
+
+      // Word count for clipboard text
+      final wordCount = clipboardText
+          .split(RegExp(r'\s+'))
+          .where((word) => word.isNotEmpty)
+          .length;
+      final readingTime = (wordCount / 200).ceil();
+
+      // Show dialog asking if user wants to paste
+      final shouldPaste = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          backgroundColor: Colors.white.withOpacity(0.95),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          title: Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Colors.blue[400]!, Colors.purple[400]!],
+                  ),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(Icons.content_paste, color: Colors.white, size: 20),
+              ),
+              SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  'Panodan Yapıştır',
+                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
+                ),
+              ),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Panoda metin bulundu:',
+                style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+              ),
+              SizedBox(height: 12),
+              Container(
+                padding: EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.grey[50],
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.grey[200]!),
+                ),
+                child: Text(
+                  clipboardText.length > 150
+                      ? '${clipboardText.substring(0, 150)}...'
+                      : clipboardText,
+                  style: TextStyle(fontSize: 13, color: Colors.grey[700]),
+                  maxLines: 4,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              SizedBox(height: 12),
+              Row(
+                children: [
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.blue[50],
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Text(
+                      '$wordCount kelime',
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: Colors.blue[600],
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 8),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.green[50],
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Text(
+                      '~$readingTime dk',
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: Colors.green[600],
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 16),
+              Text(
+                _controller.text.trim().isNotEmpty
+                    ? 'Mevcut metin değiştirilecek!'
+                    : 'Bu metni yapıştırmak istediğinizden emin misiniz?',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: _controller.text.trim().isNotEmpty
+                      ? Colors.orange[700]
+                      : Colors.grey[600],
+                  fontWeight: _controller.text.trim().isNotEmpty
+                      ? FontWeight.w600
+                      : FontWeight.normal,
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text('İptal', style: TextStyle(color: Colors.grey[600])),
+            ),
+            Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.blue[600]!, Colors.purple[600]!],
+                ),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: Text(
+                  'Yapıştır',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+
+      if (shouldPaste == true) {
+        setState(() {
+          _controller.text = clipboardText;
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Metin panodan yapıştırıldı'),
+            backgroundColor: Colors.green[600],
+            behavior: SnackBarBehavior.floating,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Pano okunamadı: $e'),
+          backgroundColor: Colors.red[600],
+          behavior: SnackBarBehavior.floating,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+      );
+    }
   }
 
   void _startReading() {
@@ -155,6 +359,32 @@ class _AddTextPageState extends State<AddTextPage> {
                         ],
                       ),
                     ),
+                    // Paste button
+                    if (_hasClipboardContent)
+                      Container(
+                        margin: EdgeInsets.only(right: 8),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [Colors.purple[400]!, Colors.pink[400]!],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.purple[300]!.withOpacity(0.3),
+                              blurRadius: 8,
+                              offset: Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: IconButton(
+                          onPressed: _pasteFromClipboard,
+                          icon: Icon(Icons.content_paste,
+                              color: Colors.white, size: 20),
+                          tooltip: 'Panodan Yapıştır',
+                        ),
+                      ),
                     if (!_isTextEmpty) ...[
                       Container(
                         margin: EdgeInsets.only(right: 8),
@@ -382,27 +612,87 @@ class _AddTextPageState extends State<AddTextPage> {
                                 ),
                               ],
                             ),
-                            child: TextField(
-                              controller: _controller,
-                              maxLines: null,
-                              expands: true,
-                              textAlignVertical: TextAlignVertical.top,
-                              decoration: InputDecoration(
-                                hintText:
-                                    'Okumak istediğiniz metni buraya yazın...\n\nÖrnek:\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n\nUt enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-                                hintStyle: TextStyle(
-                                  color: Colors.grey[400],
-                                  fontSize: 16,
-                                  height: 1.5,
+                            child: Stack(
+                              children: [
+                                TextField(
+                                  controller: _controller,
+                                  maxLines: null,
+                                  expands: true,
+                                  textAlignVertical: TextAlignVertical.top,
+                                  decoration: InputDecoration(
+                                    hintText:
+                                        'Okumak istediğiniz metni buraya yazın...\n\nÖrnek:\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n\nUt enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+                                    hintStyle: TextStyle(
+                                      color: Colors.grey[400],
+                                      fontSize: 16,
+                                      height: 1.5,
+                                    ),
+                                    border: InputBorder.none,
+                                    contentPadding: EdgeInsets.all(24),
+                                  ),
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    height: 1.6,
+                                    color: Colors.grey[800],
+                                  ),
+                                  onTap:
+                                      _checkClipboard, // Refresh clipboard check when focused
                                 ),
-                                border: InputBorder.none,
-                                contentPadding: EdgeInsets.all(24),
-                              ),
-                              style: TextStyle(
-                                fontSize: 16,
-                                height: 1.6,
-                                color: Colors.grey[800],
-                              ),
+                                // Floating paste button inside text area
+                                if (_hasClipboardContent && _isTextEmpty)
+                                  Positioned(
+                                    bottom: 16,
+                                    right: 16,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          colors: [
+                                            Colors.purple[400]!,
+                                            Colors.pink[400]!
+                                          ],
+                                        ),
+                                        borderRadius: BorderRadius.circular(16),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.purple[200]!
+                                                .withOpacity(0.5),
+                                            blurRadius: 15,
+                                            offset: Offset(0, 5),
+                                          ),
+                                        ],
+                                      ),
+                                      child: Material(
+                                        color: Colors.transparent,
+                                        child: InkWell(
+                                          borderRadius:
+                                              BorderRadius.circular(16),
+                                          onTap: _pasteFromClipboard,
+                                          child: Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 16, vertical: 12),
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Icon(Icons.content_paste,
+                                                    color: Colors.white,
+                                                    size: 18),
+                                                SizedBox(width: 8),
+                                                Text(
+                                                  'Yapıştır',
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: 14,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                              ],
                             ),
                           ),
                         ),
