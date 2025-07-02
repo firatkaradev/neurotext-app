@@ -5,6 +5,8 @@ import '../services/article_service.dart';
 import '../main.dart';
 import 'add_text_page.dart';
 import 'text_reader_page.dart';
+import 'stats_page.dart';
+import 'settings_page.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -344,7 +346,7 @@ class _HomePageState extends State<HomePage> {
                         ],
                       ),
                     ),
-                    // Theme toggle button
+                    // Statistics button
                     Container(
                       margin: EdgeInsets.only(right: 8),
                       decoration: BoxDecoration(
@@ -355,19 +357,37 @@ class _HomePageState extends State<HomePage> {
                       ),
                       child: IconButton(
                         onPressed: () {
-                          themeProvider.toggleTheme();
-                          setState(() {}); // Rebuild UI
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => StatsPage()),
+                          );
                         },
-                        icon: Icon(
-                          themeProvider.isDarkMode
-                              ? Icons.light_mode
-                              : Icons.dark_mode,
-                          color: Colors.white,
-                          size: 20,
-                        ),
-                        tooltip: themeProvider.isDarkMode
-                            ? AppLocalizations.of(context)!.lightMode
-                            : AppLocalizations.of(context)!.darkMode,
+                        icon: Icon(Icons.analytics_outlined,
+                            color: Colors.white, size: 20),
+                        tooltip: 'İstatistikler',
+                      ),
+                    ),
+                    // Settings button
+                    Container(
+                      margin: EdgeInsets.only(right: 8),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(12),
+                        border:
+                            Border.all(color: Colors.white.withOpacity(0.3)),
+                      ),
+                      child: IconButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SettingsPage()),
+                          );
+                        },
+                        icon: Icon(Icons.settings_outlined,
+                            color: Colors.white, size: 20),
+                        tooltip: 'Ayarlar',
                       ),
                     ),
                     if (_articles.isNotEmpty)

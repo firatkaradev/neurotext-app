@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../main.dart';
 import '../models/article.dart';
 import '../services/article_service.dart';
+import '../services/stats_service.dart';
 
 class TextReaderPage extends StatefulWidget {
   final String? initialText;
@@ -38,6 +39,10 @@ class _TextReaderPageState extends State<TextReaderPage> {
 
   String _displayText = '';
 
+  // Reading tracking
+  DateTime? _sessionStartTime;
+  DateTime? _lastActiveTime;
+
   @override
   void initState() {
     super.initState();
@@ -48,12 +53,14 @@ class _TextReaderPageState extends State<TextReaderPage> {
     }
 
     _setupScrollController();
+    _startReadingSession();
   }
 
   @override
   void dispose() {
     _autoScrollTimer?.cancel();
     _scrollController.dispose();
+    _endReadingSession();
     super.dispose();
   }
 
@@ -226,6 +233,34 @@ class _TextReaderPageState extends State<TextReaderPage> {
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
       );
+    }
+  }
+
+  void _startReadingSession() {
+    if (_displayText.trim().isNotEmpty) {
+      _sessionStartTime = DateTime.now();
+      _lastActiveTime = DateTime.now();
+    }
+  }
+
+  void _endReadingSession() async {
+    if (_sessionStartTime != null && _displayText.trim().isNotEmpty) {
+      final now = DateTime.now();
+      final sessionDuration = now.difference(_sessionStartTime!);
+      final readingTimeMinutes = sessionDuration.inMinutes;
+
+      if (readingTimeMinutes > 0) {
+        final wordCount = _displayText
+            .split(RegExp(r'\s+'))
+            .where((word) => word.isNotEmpty)
+            .length;
+
+        await StatsService.addReadingSession(
+          readingTimeMinutes: readingTimeMinutes,
+          wordsRead: wordCount,
+          articlesRead: 1,
+        );
+      }
     }
   }
 

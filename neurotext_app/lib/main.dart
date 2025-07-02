@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'models/article.dart';
+import 'models/reading_stats.dart';
 import 'services/article_service.dart';
+import 'services/stats_service.dart';
 import 'pages/home_page.dart';
+import 'pages/onboarding_page.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() async {
@@ -14,9 +17,11 @@ void main() async {
 
   // Register Hive adapters
   Hive.registerAdapter(ArticleAdapter());
+  Hive.registerAdapter(ReadingStatsAdapter());
 
   // Initialize services
   await ArticleService.init();
+  await StatsService.init();
 
   // Settings box for theme
   await Hive.openBox('settings');
@@ -47,10 +52,60 @@ class MyApp extends StatelessWidget {
           Locale('fr'), // French
           Locale('de'), // German
         ],
-        home: HomePage(),
+        home: _getInitialPage(),
         debugShowCheckedModeBanner: false,
       ),
     );
+  }
+
+  Widget _getInitialPage() {
+    return FutureBuilder<bool>(
+      future: _checkOnboardingCompleted(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Scaffold(
+            body: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Color(0xFF1E3C72),
+                    Color(0xFF2A5298),
+                    Color(0xFF3B82F6)
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
+              child: Center(
+                child: Container(
+                  width: 60,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  ),
+                ),
+              ),
+            ),
+          );
+        }
+
+        final isOnboardingCompleted = snapshot.data ?? false;
+        return isOnboardingCompleted ? HomePage() : OnboardingPage();
+      },
+    );
+  }
+
+  Future<bool> _checkOnboardingCompleted() async {
+    try {
+      final settingsBox = Hive.box('settings');
+      return settingsBox.get('onboarding_completed', defaultValue: false);
+    } catch (e) {
+      return false;
+    }
   }
 }
 
