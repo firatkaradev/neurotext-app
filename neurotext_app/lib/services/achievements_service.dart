@@ -846,19 +846,114 @@ class AchievementsService {
 
   static Future<Map<String, dynamic>> getUserStats() async {
     try {
+      final todayStats = StatsService.getTodayStats();
+      final weekStats = StatsService.getThisWeekStats();
+      final monthStats = StatsService.getThisMonthStats();
       final totalStats = StatsService.getTotalStats();
       final streak = StatsService.getReadingStreak();
 
-      return {
-        'totalMinutes': totalStats['totalMinutes'] ?? 0,
-        'totalWords': totalStats['totalWords'] ?? 0,
-        'totalArticles': totalStats['totalArticles'] ?? 0,
+      // Get article count from ArticleService
+      int savedArticleCount = 0;
+      try {
+        final articles = await ArticleService.getAllArticles();
+        savedArticleCount = articles.length;
+      } catch (e) {
+        savedArticleCount = 0;
+      }
+
+      // Calculate additional metrics
+      final totalMinutes = totalStats['totalMinutes'] ?? 0;
+      final totalWords = totalStats['totalWords'] ?? 0;
+      final totalArticles = totalStats['totalArticles'] ?? 0;
+      final totalDays = totalStats['totalDays'] ?? 0;
+      final longestSession = totalStats['longestSession'] ?? 0;
+      final avgDailyMinutes =
+          totalDays > 0 ? (totalMinutes / totalDays).round() : 0;
+      final avgWordsPerMinute =
+          totalMinutes > 0 ? (totalWords / totalMinutes).round() : 0;
+
+      // Calculate daily maximums from week/month data
+      int dailyMaxMinutes = 0;
+      int dailyMaxWords = 0;
+      int dailyMaxArticles = 0;
+
+      for (final stat in [...weekStats, ...monthStats]) {
+        if (stat.readingTimeMinutes > dailyMaxMinutes) {
+          dailyMaxMinutes = stat.readingTimeMinutes;
+        }
+        if (stat.wordsRead > dailyMaxWords) {
+          dailyMaxWords = stat.wordsRead;
+        }
+        if (stat.articlesRead > dailyMaxArticles) {
+          dailyMaxArticles = stat.articlesRead;
+        }
+      }
+
+      // Calculate streaks and patterns
+      int perfectWeeks = 0;
+      int perfectMonths = 0;
+      int weekendReading = 0;
+      int morningReading = 0;
+      int nightReading = 0;
+      int midnightReading = 0;
+      int lateNightReading = 0;
+
+      // Simple pattern detection based on available data
+      if (weekStats.length >= 7) perfectWeeks = 1;
+      if (monthStats.length >= 30) perfectMonths = 1;
+      weekendReading = weekStats
+          .where(
+              (s) => s.date.endsWith('Saturday') || s.date.endsWith('Sunday'))
+          .length;
+
+      // Time-based reading detection (placeholder - would need real timestamp data)
+      final now = DateTime.now();
+      final hour = now.hour;
+      if (hour >= 6 && hour <= 10) morningReading = 1;
+      if (hour >= 20 && hour <= 23) nightReading = 1;
+      if (hour >= 0 && hour <= 2) midnightReading = 1;
+      if (hour >= 22 || hour <= 4) lateNightReading = 1;
+
+      final consistencyRate =
+          totalDays > 0 ? (streak / totalDays * 100).round().clamp(0, 100) : 0;
+
+      final userStats = {
+        'totalMinutes': totalMinutes,
+        'totalWords': totalWords,
+        'totalArticles': totalArticles,
         'currentStreak': streak,
-        'totalDays': totalStats['totalDays'] ?? 0,
-        'longestSession': totalStats['longestSession'] ?? 0,
-        'unlockedAchievements': 0,
+        'totalDays': totalDays,
+        'longestSession': longestSession,
+        'avgDailyMinutes': avgDailyMinutes,
+        'avgWordsPerMinute': avgWordsPerMinute,
+        'dailyMaxMinutes': dailyMaxMinutes,
+        'dailyMaxWords': dailyMaxWords,
+        'dailyMaxArticles': dailyMaxArticles,
+        'savedArticles': savedArticleCount,
+        'perfectWeeks': perfectWeeks,
+        'perfectMonths': perfectMonths,
+        'weekendReading': weekendReading,
+        'morningReading': morningReading,
+        'nightReading': nightReading,
+        'midnightReading': midnightReading,
+        'lateNightReading': lateNightReading,
+        'consistencyRate': consistencyRate,
+        'diverseReadingTimes': 3, // Placeholder
+        'slowReading': avgWordsPerMinute > 0 && avgWordsPerMinute < 30 ? 1 : 0,
+        'fastReading': avgWordsPerMinute > 80 ? 1 : 0,
+        'unlockedAchievements': 0, // Will be calculated below
+        'settingsVisited': 0, // Placeholder
+        'themeChanges': 0, // Placeholder
+        'fontSizeChanges': 0, // Placeholder
       };
+
+      // Calculate unlocked achievements count
+      final unlockedCount = getUnlockedAchievements(userStats).length;
+      userStats['unlockedAchievements'] = unlockedCount;
+
+      return userStats;
     } catch (e) {
+      // Return safe defaults on error
       return {
         'totalMinutes': 0,
         'totalWords': 0,
@@ -866,7 +961,27 @@ class AchievementsService {
         'currentStreak': 0,
         'totalDays': 0,
         'longestSession': 0,
+        'avgDailyMinutes': 0,
+        'avgWordsPerMinute': 0,
+        'dailyMaxMinutes': 0,
+        'dailyMaxWords': 0,
+        'dailyMaxArticles': 0,
+        'savedArticles': 0,
+        'perfectWeeks': 0,
+        'perfectMonths': 0,
+        'weekendReading': 0,
+        'morningReading': 0,
+        'nightReading': 0,
+        'midnightReading': 0,
+        'lateNightReading': 0,
+        'consistencyRate': 0,
+        'diverseReadingTimes': 0,
+        'slowReading': 0,
+        'fastReading': 0,
         'unlockedAchievements': 0,
+        'settingsVisited': 0,
+        'themeChanges': 0,
+        'fontSizeChanges': 0,
       };
     }
   }
