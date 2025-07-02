@@ -228,118 +228,6 @@ class _TextReaderPageState extends State<TextReaderPage> {
     }
   }
 
-  Widget _buildStatusIndicator() {
-    if (_isPaused && _isAutoScrolling) {
-      return Container(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.orange[400]!, Colors.amber[400]!],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.orange[200]!.withOpacity(0.5),
-              blurRadius: 15,
-              offset: Offset(0, 5),
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.pause_circle, color: Colors.white, size: 20),
-            SizedBox(width: 8),
-            Text(
-              'Odaklanma Modu',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
-        ),
-      );
-    } else if (_isManualScrolling) {
-      return Container(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.blue[400]!, Colors.cyan[400]!],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.blue[200]!.withOpacity(0.5),
-              blurRadius: 15,
-              offset: Offset(0, 5),
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.touch_app, color: Colors.white, size: 20),
-            SizedBox(width: 8),
-            Text(
-              'Manuel Gezinme',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
-        ),
-      );
-    } else if (_isAutoScrolling) {
-      return Container(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              _speedModes[_currentSpeedIndex]['color'][400]!,
-              _speedModes[_currentSpeedIndex]['color'][500]!,
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: _speedModes[_currentSpeedIndex]['color'][200]!
-                  .withOpacity(0.5),
-              blurRadius: 15,
-              offset: Offset(0, 5),
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.rocket_launch, color: Colors.white, size: 20),
-            SizedBox(width: 8),
-            Text(
-              '${_speedModes[_currentSpeedIndex]['name']} Hızda Okuyorsunuz',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
-        ),
-      );
-    } else {
-      return Container(height: 24); // Boş alan
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -380,30 +268,7 @@ class _TextReaderPageState extends State<TextReaderPage> {
                       ),
                     ),
                     SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Neuro Reader',
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.w800,
-                              color: Colors.white,
-                              letterSpacing: -0.5,
-                            ),
-                          ),
-                          Text(
-                            'Gelişmiş okuma deneyimi',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.white.withOpacity(0.8),
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+
                     // Control buttons
                     if (_displayText.trim().isNotEmpty) ...[
                       Container(
@@ -479,9 +344,7 @@ class _TextReaderPageState extends State<TextReaderPage> {
                 ),
               ),
 
-              // Status indicator
-              Center(child: _buildStatusIndicator()),
-              SizedBox(height: 16),
+              SizedBox(height: 8),
 
               // Content Area
               Expanded(
