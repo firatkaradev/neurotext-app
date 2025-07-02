@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import '../main.dart';
 import '../models/article.dart';
 import '../services/article_service.dart';
 
@@ -230,25 +231,19 @@ class _TextReaderPageState extends State<TextReaderPage> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = ThemeProvider.of(context)!;
+
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Color(0xFF1E3C72),
-              Color(0xFF2A5298),
-              Color(0xFF3B82F6),
-            ],
-          ),
+          gradient: themeProvider.primaryGradient,
         ),
         child: SafeArea(
           child: Column(
             children: [
               // Modern Header
               Container(
-                padding: EdgeInsets.fromLTRB(20, 16, 20, 24),
+                padding: EdgeInsets.all(12),
                 child: Row(
                   children: [
                     Container(
@@ -344,18 +339,17 @@ class _TextReaderPageState extends State<TextReaderPage> {
                 ),
               ),
 
-              SizedBox(height: 8),
-
               // Content Area
               Expanded(
                 child: Container(
-                  margin: EdgeInsets.symmetric(horizontal: 20),
+                  margin: EdgeInsets.symmetric(horizontal: 12),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: themeProvider.cardColor,
                     borderRadius: BorderRadius.circular(25),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
+                        color: Colors.black
+                            .withOpacity(themeProvider.isDarkMode ? 0.3 : 0.1),
                         blurRadius: 30,
                         offset: Offset(0, 10),
                       ),
@@ -394,7 +388,6 @@ class _TextReaderPageState extends State<TextReaderPage> {
                   ),
                 ),
               ),
-              SizedBox(height: 20),
             ],
           ),
         ),
@@ -446,9 +439,11 @@ class NeuroTextWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = ThemeProvider.of(context)!;
+
     final textStyle = TextStyle(
       fontSize: fontSize,
-      color: Colors.grey[800],
+      color: themeProvider.textPrimaryColor,
       height: 1.6,
       letterSpacing: 0.3,
     );
@@ -463,9 +458,7 @@ class NeuroTextWidget extends StatelessWidget {
                 width: 80,
                 height: 80,
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Colors.grey[300]!, Colors.grey[400]!],
-                  ),
+                  gradient: themeProvider.accentGradient,
                   borderRadius: BorderRadius.circular(40),
                 ),
                 child: Icon(Icons.text_snippet_outlined,
@@ -477,7 +470,7 @@ class NeuroTextWidget extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
-                  color: Colors.grey[600],
+                  color: themeProvider.textPrimaryColor,
                 ),
               ),
               SizedBox(height: 8),
@@ -485,7 +478,7 @@ class NeuroTextWidget extends StatelessWidget {
                 'Okumak istediğiniz metni ekleyin',
                 style: TextStyle(
                   fontSize: 14,
-                  color: Colors.grey[500],
+                  color: themeProvider.textSecondaryColor,
                 ),
               ),
             ],

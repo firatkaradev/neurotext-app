@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/article.dart';
 import '../services/article_service.dart';
+import '../main.dart';
 import 'add_text_page.dart';
 import 'text_reader_page.dart';
 
@@ -76,19 +77,28 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _deleteArticle(Article article) async {
+    final themeProvider = ThemeProvider.of(context)!;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: Colors.white.withOpacity(0.95),
+        backgroundColor: themeProvider.cardColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title:
-            Text('Makaleyi Sil', style: TextStyle(fontWeight: FontWeight.w600)),
+        title: Text(
+          'Makaleyi Sil',
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            color: themeProvider.textPrimaryColor,
+          ),
+        ),
         content: Text(
-            '${article.title} adlı makaleyi silmek istediğinizden emin misiniz?'),
+          '${article.title} adlı makaleyi silmek istediğinizden emin misiniz?',
+          style: TextStyle(color: themeProvider.textSecondaryColor),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: Text('İptal', style: TextStyle(color: Colors.grey[600])),
+            child: Text('İptal',
+                style: TextStyle(color: themeProvider.textTertiaryColor)),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
@@ -130,19 +140,28 @@ class _HomePageState extends State<HomePage> {
   void _deleteAllArticles() async {
     if (_articles.isEmpty) return;
 
+    final themeProvider = ThemeProvider.of(context)!;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: Colors.white.withOpacity(0.95),
+        backgroundColor: themeProvider.cardColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Text('Tüm Makaleleri Sil',
-            style: TextStyle(fontWeight: FontWeight.w600)),
+        title: Text(
+          'Tüm Makaleleri Sil',
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            color: themeProvider.textPrimaryColor,
+          ),
+        ),
         content: Text(
-            '${_articles.length} makaleyi silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.'),
+          '${_articles.length} makaleyi silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.',
+          style: TextStyle(color: themeProvider.textSecondaryColor),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: Text('İptal', style: TextStyle(color: Colors.grey[600])),
+            child: Text('İptal',
+                style: TextStyle(color: themeProvider.textTertiaryColor)),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
@@ -206,6 +225,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildEmptyState() {
+    final themeProvider = ThemeProvider.of(context)!;
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -214,11 +235,7 @@ class _HomePageState extends State<HomePage> {
             width: 120,
             height: 120,
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Colors.blue[200]!, Colors.purple[200]!],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
+              gradient: themeProvider.accentGradient,
               borderRadius: BorderRadius.circular(60),
             ),
             child: Icon(
@@ -233,7 +250,7 @@ class _HomePageState extends State<HomePage> {
             style: TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.w700,
-              color: Colors.grey[800],
+              color: themeProvider.textPrimaryColor,
               letterSpacing: -0.5,
             ),
           ),
@@ -243,22 +260,21 @@ class _HomePageState extends State<HomePage> {
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 16,
-              color: Colors.grey[600],
+              color: themeProvider.textSecondaryColor,
               height: 1.4,
             ),
           ),
           SizedBox(height: 40),
           Container(
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Colors.blue[600]!, Colors.purple[600]!],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
+              gradient: themeProvider.accentGradient,
               borderRadius: BorderRadius.circular(25),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.blue[300]!.withOpacity(0.4),
+                  color: (themeProvider.isDarkMode
+                          ? Colors.purple[300]!
+                          : Colors.blue[300]!)
+                      .withOpacity(0.4),
                   blurRadius: 20,
                   offset: Offset(0, 10),
                 ),
@@ -285,6 +301,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildNoResultsState() {
+    final themeProvider = ThemeProvider.of(context)!;
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -294,7 +312,7 @@ class _HomePageState extends State<HomePage> {
             height: 100,
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [Colors.orange[200]!, Colors.red[200]!],
+                colors: [Colors.orange[400]!, Colors.red[400]!],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -312,7 +330,7 @@ class _HomePageState extends State<HomePage> {
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.w700,
-              color: Colors.grey[800],
+              color: themeProvider.textPrimaryColor,
               letterSpacing: -0.5,
             ),
           ),
@@ -321,7 +339,7 @@ class _HomePageState extends State<HomePage> {
             '"${_searchController.text}" için sonuç bulunamadı',
             style: TextStyle(
               fontSize: 16,
-              color: Colors.grey[600],
+              color: themeProvider.textSecondaryColor,
             ),
           ),
         ],
@@ -331,18 +349,12 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = ThemeProvider.of(context)!;
+
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Color(0xFF1E3C72),
-              Color(0xFF2A5298),
-              Color(0xFF3B82F6),
-            ],
-          ),
+          gradient: themeProvider.primaryGradient,
         ),
         child: SafeArea(
           child: Column(
@@ -389,6 +401,32 @@ class _HomePageState extends State<HomePage> {
                         ],
                       ),
                     ),
+                    // Theme toggle button
+                    Container(
+                      margin: EdgeInsets.only(right: 8),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(12),
+                        border:
+                            Border.all(color: Colors.white.withOpacity(0.3)),
+                      ),
+                      child: IconButton(
+                        onPressed: () {
+                          themeProvider.toggleTheme();
+                          setState(() {}); // Rebuild UI
+                        },
+                        icon: Icon(
+                          themeProvider.isDarkMode
+                              ? Icons.light_mode
+                              : Icons.dark_mode,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                        tooltip: themeProvider.isDarkMode
+                            ? 'Açık Mod'
+                            : 'Karanlık Mod',
+                      ),
+                    ),
                     if (_articles.isNotEmpty)
                       Container(
                         decoration: BoxDecoration(
@@ -399,6 +437,8 @@ class _HomePageState extends State<HomePage> {
                         ),
                         child: PopupMenuButton(
                           icon: Icon(Icons.more_vert, color: Colors.white),
+                          surfaceTintColor: themeProvider.cardColor,
+                          color: themeProvider.cardColor,
                           itemBuilder: (context) => [
                             PopupMenuItem(
                               value: 'delete_all',
@@ -406,7 +446,10 @@ class _HomePageState extends State<HomePage> {
                                 children: [
                                   Icon(Icons.delete_forever, color: Colors.red),
                                   SizedBox(width: 8),
-                                  Text('Tümünü Sil'),
+                                  Text('Tümünü Sil',
+                                      style: TextStyle(
+                                          color:
+                                              themeProvider.textPrimaryColor)),
                                 ],
                               ),
                             ),
@@ -426,7 +469,7 @@ class _HomePageState extends State<HomePage> {
               Expanded(
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.grey[50],
+                    color: themeProvider.surfaceColor,
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(30),
                       topRight: Radius.circular(30),
@@ -438,12 +481,7 @@ class _HomePageState extends State<HomePage> {
                             width: 60,
                             height: 60,
                             decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  Colors.blue[600]!,
-                                  Colors.purple[600]!
-                                ],
-                              ),
+                              gradient: themeProvider.accentGradient,
                               borderRadius: BorderRadius.circular(30),
                             ),
                             child: Center(
@@ -464,11 +502,14 @@ class _HomePageState extends State<HomePage> {
                                 padding: EdgeInsets.symmetric(horizontal: 20),
                                 child: Container(
                                   decoration: BoxDecoration(
-                                    color: Colors.white,
+                                    color: themeProvider.cardColor,
                                     borderRadius: BorderRadius.circular(20),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.black.withOpacity(0.05),
+                                        color: Colors.black.withOpacity(
+                                            themeProvider.isDarkMode
+                                                ? 0.2
+                                                : 0.05),
                                         blurRadius: 20,
                                         offset: Offset(0, 5),
                                       ),
@@ -476,17 +517,23 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                   child: TextField(
                                     controller: _searchController,
+                                    style: TextStyle(
+                                        color: themeProvider.textPrimaryColor),
                                     decoration: InputDecoration(
                                       hintText: 'Makalelerde ara...',
-                                      hintStyle:
-                                          TextStyle(color: Colors.grey[400]),
+                                      hintStyle: TextStyle(
+                                          color:
+                                              themeProvider.textTertiaryColor),
                                       prefixIcon: Icon(Icons.search,
-                                          color: Colors.grey[400], size: 24),
+                                          color:
+                                              themeProvider.textTertiaryColor,
+                                          size: 24),
                                       suffixIcon:
                                           _searchController.text.isNotEmpty
                                               ? IconButton(
                                                   icon: Icon(Icons.clear,
-                                                      color: Colors.grey[400]),
+                                                      color: themeProvider
+                                                          .textTertiaryColor),
                                                   onPressed: () {
                                                     _searchController.clear();
                                                   },
@@ -524,13 +571,17 @@ class _HomePageState extends State<HomePage> {
                                               margin:
                                                   EdgeInsets.only(bottom: 16),
                                               decoration: BoxDecoration(
-                                                color: Colors.white,
+                                                color: themeProvider.cardColor,
                                                 borderRadius:
                                                     BorderRadius.circular(20),
                                                 boxShadow: [
                                                   BoxShadow(
                                                     color: Colors.black
-                                                        .withOpacity(0.06),
+                                                        .withOpacity(
+                                                            themeProvider
+                                                                    .isDarkMode
+                                                                ? 0.2
+                                                                : 0.06),
                                                     blurRadius: 20,
                                                     offset: Offset(0, 8),
                                                   ),
@@ -552,19 +603,8 @@ class _HomePageState extends State<HomePage> {
                                                           height: 60,
                                                           decoration:
                                                               BoxDecoration(
-                                                            gradient:
-                                                                LinearGradient(
-                                                              colors: [
-                                                                Colors
-                                                                    .blue[400]!,
-                                                                Colors.purple[
-                                                                    400]!,
-                                                              ],
-                                                              begin: Alignment
-                                                                  .topLeft,
-                                                              end: Alignment
-                                                                  .bottomRight,
-                                                            ),
+                                                            gradient: themeProvider
+                                                                .accentGradient,
                                                             borderRadius:
                                                                 BorderRadius
                                                                     .circular(
@@ -591,9 +631,8 @@ class _HomePageState extends State<HomePage> {
                                                                       FontWeight
                                                                           .w700,
                                                                   fontSize: 18,
-                                                                  color: Colors
-                                                                          .grey[
-                                                                      800],
+                                                                  color: themeProvider
+                                                                      .textPrimaryColor,
                                                                   letterSpacing:
                                                                       -0.5,
                                                                 ),
@@ -612,9 +651,8 @@ class _HomePageState extends State<HomePage> {
                                                                         .ellipsis,
                                                                 style:
                                                                     TextStyle(
-                                                                  color: Colors
-                                                                          .grey[
-                                                                      600],
+                                                                  color: themeProvider
+                                                                      .textSecondaryColor,
                                                                   fontSize: 14,
                                                                   height: 1.4,
                                                                 ),
@@ -631,8 +669,12 @@ class _HomePageState extends State<HomePage> {
                                                                             4),
                                                                     decoration:
                                                                         BoxDecoration(
-                                                                      color: Colors
-                                                                          .blue[50],
+                                                                      color: themeProvider
+                                                                              .isDarkMode
+                                                                          ? Colors
+                                                                              .blue[900]!
+                                                                              .withOpacity(0.3)
+                                                                          : Colors.blue[50],
                                                                       borderRadius:
                                                                           BorderRadius.circular(
                                                                               8),
@@ -677,8 +719,12 @@ class _HomePageState extends State<HomePage> {
                                                                             4),
                                                                     decoration:
                                                                         BoxDecoration(
-                                                                      color: Colors
-                                                                          .purple[50],
+                                                                      color: themeProvider
+                                                                              .isDarkMode
+                                                                          ? Colors
+                                                                              .purple[900]!
+                                                                              .withOpacity(0.3)
+                                                                          : Colors.purple[50],
                                                                       borderRadius:
                                                                           BorderRadius.circular(
                                                                               8),
@@ -720,9 +766,8 @@ class _HomePageState extends State<HomePage> {
                                                                             .createdAt),
                                                                     style:
                                                                         TextStyle(
-                                                                      color: Colors
-                                                                              .grey[
-                                                                          500],
+                                                                      color: themeProvider
+                                                                          .textTertiaryColor,
                                                                       fontSize:
                                                                           12,
                                                                       fontWeight:
@@ -738,8 +783,12 @@ class _HomePageState extends State<HomePage> {
                                                         Container(
                                                           decoration:
                                                               BoxDecoration(
-                                                            color:
-                                                                Colors.grey[50],
+                                                            color: themeProvider
+                                                                    .isDarkMode
+                                                                ? Colors
+                                                                    .grey[800]
+                                                                : Colors
+                                                                    .grey[50],
                                                             borderRadius:
                                                                 BorderRadius
                                                                     .circular(
@@ -749,8 +798,13 @@ class _HomePageState extends State<HomePage> {
                                                               PopupMenuButton(
                                                             icon: Icon(
                                                                 Icons.more_vert,
-                                                                color: Colors
-                                                                    .grey[600]),
+                                                                color: themeProvider
+                                                                    .textSecondaryColor),
+                                                            surfaceTintColor:
+                                                                themeProvider
+                                                                    .cardColor,
+                                                            color: themeProvider
+                                                                .cardColor,
                                                             itemBuilder:
                                                                 (context) => [
                                                               PopupMenuItem(
@@ -765,7 +819,10 @@ class _HomePageState extends State<HomePage> {
                                                                     SizedBox(
                                                                         width:
                                                                             8),
-                                                                    Text('Sil'),
+                                                                    Text('Sil',
+                                                                        style: TextStyle(
+                                                                            color:
+                                                                                themeProvider.textPrimaryColor)),
                                                                   ],
                                                                 ),
                                                               ),
@@ -801,15 +858,14 @@ class _HomePageState extends State<HomePage> {
         width: 64,
         height: 64,
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.blue[600]!, Colors.purple[600]!],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
+          gradient: themeProvider.accentGradient,
           borderRadius: BorderRadius.circular(32),
           boxShadow: [
             BoxShadow(
-              color: Colors.blue[300]!.withOpacity(0.4),
+              color: (themeProvider.isDarkMode
+                      ? Colors.purple[300]!
+                      : Colors.blue[300]!)
+                  .withOpacity(0.4),
               blurRadius: 20,
               offset: Offset(0, 8),
             ),
@@ -817,7 +873,11 @@ class _HomePageState extends State<HomePage> {
         ),
         child: FloatingActionButton(
           onPressed: _openAddTextPage,
-          child: Icon(Icons.add, size: 28),
+          child: Icon(
+            Icons.add,
+            size: 28,
+            color: Colors.white,
+          ),
           backgroundColor: Colors.transparent,
           elevation: 0,
           tooltip: 'Yeni Metin Ekle',

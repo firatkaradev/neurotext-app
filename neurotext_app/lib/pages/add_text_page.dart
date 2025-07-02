@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../main.dart';
 import 'text_reader_page.dart';
 
 class AddTextPage extends StatefulWidget {
@@ -291,6 +292,7 @@ class _AddTextPageState extends State<AddTextPage> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = ThemeProvider.of(context)!;
     final wordCount = _controller.text
         .split(RegExp(r'\s+'))
         .where((word) => word.isNotEmpty)
@@ -300,15 +302,7 @@ class _AddTextPageState extends State<AddTextPage> {
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Color(0xFF1E3C72),
-              Color(0xFF2A5298),
-              Color(0xFF3B82F6),
-            ],
-          ),
+          gradient: themeProvider.primaryGradient,
         ),
         child: SafeArea(
           child: Column(
@@ -433,7 +427,7 @@ class _AddTextPageState extends State<AddTextPage> {
               Expanded(
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.grey[50],
+                    color: themeProvider.surfaceColor,
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(30),
                       topRight: Radius.circular(30),
@@ -448,11 +442,12 @@ class _AddTextPageState extends State<AddTextPage> {
                         Container(
                           padding: EdgeInsets.all(20),
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: themeProvider.cardColor,
                             borderRadius: BorderRadius.circular(20),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.05),
+                                color: Colors.black.withOpacity(
+                                    themeProvider.isDarkMode ? 0.2 : 0.05),
                                 blurRadius: 20,
                                 offset: Offset(0, 5),
                               ),
@@ -491,14 +486,16 @@ class _AddTextPageState extends State<AddTextPage> {
                                           style: TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.w700,
-                                            color: Colors.grey[800],
+                                            color:
+                                                themeProvider.textPrimaryColor,
                                             letterSpacing: -0.5,
                                           ),
                                         ),
                                         Text(
                                           'Gelişmiş okuma deneyimi için hazır',
                                           style: TextStyle(
-                                            color: Colors.grey[600],
+                                            color: themeProvider
+                                                .textSecondaryColor,
                                             fontSize: 14,
                                           ),
                                         ),
@@ -514,7 +511,9 @@ class _AddTextPageState extends State<AddTextPage> {
                                     child: Container(
                                       padding: EdgeInsets.all(12),
                                       decoration: BoxDecoration(
-                                        color: Colors.blue[50],
+                                        color: themeProvider.isDarkMode
+                                            ? Colors.blue[900]!.withOpacity(0.3)
+                                            : Colors.blue[50],
                                         borderRadius: BorderRadius.circular(12),
                                       ),
                                       child: Column(
@@ -541,7 +540,10 @@ class _AddTextPageState extends State<AddTextPage> {
                                     child: Container(
                                       padding: EdgeInsets.all(12),
                                       decoration: BoxDecoration(
-                                        color: Colors.purple[50],
+                                        color: themeProvider.isDarkMode
+                                            ? Colors.purple[900]!
+                                                .withOpacity(0.3)
+                                            : Colors.purple[50],
                                         borderRadius: BorderRadius.circular(12),
                                       ),
                                       child: Column(
@@ -568,7 +570,10 @@ class _AddTextPageState extends State<AddTextPage> {
                                     child: Container(
                                       padding: EdgeInsets.all(12),
                                       decoration: BoxDecoration(
-                                        color: Colors.green[50],
+                                        color: themeProvider.isDarkMode
+                                            ? Colors.green[900]!
+                                                .withOpacity(0.3)
+                                            : Colors.green[50],
                                         borderRadius: BorderRadius.circular(12),
                                       ),
                                       child: Column(
@@ -602,11 +607,12 @@ class _AddTextPageState extends State<AddTextPage> {
                         Expanded(
                           child: Container(
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: themeProvider.cardColor,
                               borderRadius: BorderRadius.circular(20),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withOpacity(0.05),
+                                  color: Colors.black.withOpacity(
+                                      themeProvider.isDarkMode ? 0.2 : 0.05),
                                   blurRadius: 20,
                                   offset: Offset(0, 5),
                                 ),
@@ -623,7 +629,7 @@ class _AddTextPageState extends State<AddTextPage> {
                                     hintText:
                                         'Okumak istediğiniz metni buraya yazın...\n\nÖrnek:\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n\nUt enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
                                     hintStyle: TextStyle(
-                                      color: Colors.grey[400],
+                                      color: themeProvider.textTertiaryColor,
                                       fontSize: 16,
                                       height: 1.5,
                                     ),
@@ -633,7 +639,7 @@ class _AddTextPageState extends State<AddTextPage> {
                                   style: TextStyle(
                                     fontSize: 16,
                                     height: 1.6,
-                                    color: Colors.grey[800],
+                                    color: themeProvider.textPrimaryColor,
                                   ),
                                   onTap:
                                       _checkClipboard, // Refresh clipboard check when focused
@@ -703,25 +709,26 @@ class _AddTextPageState extends State<AddTextPage> {
                           Container(
                             padding: EdgeInsets.all(16),
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: themeProvider.cardColor,
                               borderRadius: BorderRadius.circular(16),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withOpacity(0.05),
+                                  color: Colors.black.withOpacity(
+                                      themeProvider.isDarkMode ? 0.2 : 0.05),
                                   blurRadius: 15,
                                   offset: Offset(0, 3),
                                 ),
                               ],
                             ),
-                            child: Wrap(
-                              spacing: 12,
-                              runSpacing: 12,
+                            child: Row(
                               children: [
                                 Container(
                                   padding: EdgeInsets.symmetric(
                                       horizontal: 12, vertical: 8),
                                   decoration: BoxDecoration(
-                                    color: Colors.blue[50],
+                                    color: themeProvider.isDarkMode
+                                        ? Colors.blue[900]!.withOpacity(0.3)
+                                        : Colors.blue[50],
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: Row(
@@ -741,11 +748,14 @@ class _AddTextPageState extends State<AddTextPage> {
                                     ],
                                   ),
                                 ),
+                                SizedBox(width: 12),
                                 Container(
                                   padding: EdgeInsets.symmetric(
                                       horizontal: 12, vertical: 8),
                                   decoration: BoxDecoration(
-                                    color: Colors.purple[50],
+                                    color: themeProvider.isDarkMode
+                                        ? Colors.purple[900]!.withOpacity(0.3)
+                                        : Colors.purple[50],
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: Row(
@@ -770,7 +780,9 @@ class _AddTextPageState extends State<AddTextPage> {
                                   padding: EdgeInsets.symmetric(
                                       horizontal: 12, vertical: 8),
                                   decoration: BoxDecoration(
-                                    color: Colors.green[50],
+                                    color: themeProvider.isDarkMode
+                                        ? Colors.green[900]!.withOpacity(0.3)
+                                        : Colors.green[50],
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: Row(
@@ -806,20 +818,16 @@ class _AddTextPageState extends State<AddTextPage> {
                                     Colors.grey[300]!,
                                     Colors.grey[400]!
                                   ])
-                                : LinearGradient(
-                                    colors: [
-                                      Colors.blue[600]!,
-                                      Colors.purple[600]!
-                                    ],
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                  ),
+                                : themeProvider.accentGradient,
                             borderRadius: BorderRadius.circular(16),
                             boxShadow: _isTextEmpty
                                 ? []
                                 : [
                                     BoxShadow(
-                                      color: Colors.blue[300]!.withOpacity(0.4),
+                                      color: (themeProvider.isDarkMode
+                                              ? Colors.purple[300]!
+                                              : Colors.blue[300]!)
+                                          .withOpacity(0.4),
                                       blurRadius: 20,
                                       offset: Offset(0, 8),
                                     ),
