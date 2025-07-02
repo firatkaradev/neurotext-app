@@ -3,8 +3,10 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'models/article.dart';
 import 'models/reading_stats.dart';
+import 'models/story.dart';
 import 'services/article_service.dart';
 import 'services/stats_service.dart';
+import 'services/story_service.dart';
 import 'pages/home_page.dart';
 import 'pages/onboarding_page.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -18,9 +20,11 @@ void main() async {
   // Register Hive adapters
   Hive.registerAdapter(ArticleAdapter());
   Hive.registerAdapter(ReadingStatsAdapter());
+  Hive.registerAdapter(StoryAdapter());
 
   // Initialize services
   await ArticleService.init();
+  await StoryService.initializePreloadedStories();
   await StatsService.init();
 
   // Settings box for theme
