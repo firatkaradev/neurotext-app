@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../models/article.dart';
 import '../services/article_service.dart';
 import '../main.dart';
@@ -42,7 +43,9 @@ class _HomePageState extends State<HomePage> {
         _isLoading = false;
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Makaleler yüklenemedi: $e')),
+        SnackBar(
+            content: Text(AppLocalizations.of(context)!
+                .articlesCouldNotBeLoaded(e.toString()))),
       );
     }
   }
@@ -84,25 +87,25 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: themeProvider.cardColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: Text(
-          'Makaleyi Sil',
+          AppLocalizations.of(context)!.deleteArticleTitle,
           style: TextStyle(
             fontWeight: FontWeight.w600,
             color: themeProvider.textPrimaryColor,
           ),
         ),
         content: Text(
-          '${article.title} adlı makaleyi silmek istediğinizden emin misiniz?',
+          AppLocalizations.of(context)!.deleteArticleMessage(article.title),
           style: TextStyle(color: themeProvider.textSecondaryColor),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: Text('İptal',
+            child: Text(AppLocalizations.of(context)!.cancel,
                 style: TextStyle(color: themeProvider.textTertiaryColor)),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: Text('Sil',
+            child: Text(AppLocalizations.of(context)!.delete,
                 style: TextStyle(
                     color: Colors.red[600], fontWeight: FontWeight.w600)),
           ),
@@ -382,7 +385,7 @@ class _HomePageState extends State<HomePage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Neuro Text',
+                            AppLocalizations.of(context)!.homeTitle,
                             style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.w800,
@@ -391,7 +394,8 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           Text(
-                            '${_articles.length} Makale • Gelişmiş Okuma',
+                            AppLocalizations.of(context)!
+                                .homeSubtitle(_articles.length),
                             style: TextStyle(
                               fontSize: 14,
                               color: Colors.white.withOpacity(0.8),
@@ -423,8 +427,8 @@ class _HomePageState extends State<HomePage> {
                           size: 20,
                         ),
                         tooltip: themeProvider.isDarkMode
-                            ? 'Açık Mod'
-                            : 'Karanlık Mod',
+                            ? AppLocalizations.of(context)!.lightMode
+                            : AppLocalizations.of(context)!.darkMode,
                       ),
                     ),
                     if (_articles.isNotEmpty)

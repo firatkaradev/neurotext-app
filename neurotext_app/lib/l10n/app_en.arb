@@ -1,0 +1,183 @@
+{
+  "@@locale": "en",
+  "appTitle": "Neuro Text Reader",
+  "homeTitle": "Neuro Text",
+  "homeSubtitle": "{count} Articles • Advanced Reading",
+  "@homeSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "lightMode": "Light Mode",
+  "darkMode": "Dark Mode",
+  "deleteAll": "Delete All",
+  "search": "Search articles...",
+  "noArticlesTitle": "No Articles Yet",
+  "noArticlesSubtitle": "Add your first text to start\nthe advanced reading experience",
+  "addFirstText": "Add First Text",
+  "noResultsTitle": "No Results Found",
+  "noResultsSubtitle": "No results found for \"{query}\"",
+  "@noResultsSubtitle": {
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteArticleTitle": "Delete Article",
+  "deleteArticleMessage": "Are you sure you want to delete the article \"{title}\"?",
+  "@deleteArticleMessage": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteAllArticlesTitle": "Delete All Articles",
+  "deleteAllArticlesMessage": "Are you sure you want to delete {count} articles? This action cannot be undone.",
+  "@deleteAllArticlesMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "deleteAllButton": "Delete All",
+  "articleDeleted": "Article deleted",
+  "allArticlesDeleted": "All articles deleted",
+  "articlesCouldNotBeDeleted": "Articles could not be deleted: {error}",
+  "@articlesCouldNotBeDeleted": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "articleCouldNotBeDeleted": "Article could not be deleted: {error}",
+  "@articleCouldNotBeDeleted": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "articlesCouldNotBeLoaded": "Articles could not be loaded: {error}",
+  "@articlesCouldNotBeLoaded": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "relativeTimeMinutesAgo": "{minutes} minutes ago",
+  "@relativeTimeMinutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "relativeTimeHoursAgo": "{hours} hours ago",
+  "@relativeTimeHoursAgo": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "relativeTimeDaysAgo": "{days} days ago",
+  "@relativeTimeDaysAgo": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "relativeTimeJustNow": "Just now",
+  "addNewText": "Add New Text",
+  "textInputTitle": "Text Input",
+  "textInputSubtitle": "Write the text you want to read",
+  "pasteFromClipboard": "Paste from Clipboard",
+  "clearText": "Clear Text",
+  "startReading": "Start Reading",
+  "neuroTextReader": "Neuro Text Reader",
+  "neuroTextReaderSubtitle": "Ready for advanced reading experience",
+  "gradientTransitions": "Gradient\nTransitions",
+  "bionicReading": "Bionic\nReading",
+  "autoScroll": "Auto\nScroll",
+  "textInputPlaceholder": "Write the text you want to read here...\n\nExample:\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n\nUt enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+  "wordCount": "{count} words",
+  "@wordCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "characterCount": "{count} characters",
+  "@characterCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "readingTime": "~{minutes} min",
+  "@readingTime": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "writeTextFirst": "Write text first",
+  "pleaseEnterText": "Please enter the text you want to read",
+  "clearTextTitle": "Clear Text",
+  "clearTextMessage": "The text you entered will be deleted. Are you sure?",
+  "clear": "Clear",
+  "clipboardDialogTitle": "Paste from Clipboard",
+  "clipboardDialogContent": "Text found in clipboard:",
+  "clipboardDialogWarning": "Existing text will be replaced!",
+  "clipboardDialogConfirm": "Are you sure you want to paste this text?",
+  "paste": "Paste",
+  "textPasted": "Text pasted from clipboard",
+  "noTextInClipboard": "No text found in clipboard",
+  "clipboardCouldNotBeRead": "Clipboard could not be read: {error}",
+  "@clipboardCouldNotBeRead": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "saveArticle": "Save Article",
+  "speedSlow": "Slow",
+  "speedNormal": "Normal",
+  "speedFast": "Fast",
+  "switchToLiveMode": "Switch to Live Mode",
+  "switchToManualMode": "Switch to Manual Mode",
+  "start": "Start",
+  "noTextLoaded": "No text loaded yet",
+  "addTextToRead": "Add the text you want to read",
+  "articleSaved": "Article saved: {title}",
+  "@articleSaved": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "articleCouldNotBeSaved": "Article could not be saved: {error}",
+  "@articleCouldNotBeSaved": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "noTextToSave": "No text found to save"
+} 
