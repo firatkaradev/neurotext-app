@@ -266,6 +266,60 @@ class _TextReaderPageState extends State<TextReaderPage> {
 
                     // Control buttons
                     if (_displayText.trim().isNotEmpty) ...[
+                      // Font size controls
+                      Container(
+                        margin: EdgeInsets.only(right: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(12),
+                          border:
+                              Border.all(color: Colors.white.withOpacity(0.3)),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              onPressed: themeProvider.fontSize > 12.0
+                                  ? () {
+                                      themeProvider.decreaseFontSize();
+                                      setState(() {}); // Force rebuild
+                                    }
+                                  : null,
+                              icon: Icon(Icons.text_decrease,
+                                  color: themeProvider.fontSize > 12.0
+                                      ? Colors.white
+                                      : Colors.white.withOpacity(0.5),
+                                  size: 18),
+                              tooltip: 'Yazıyı Küçült',
+                              padding: EdgeInsets.all(8),
+                              constraints:
+                                  BoxConstraints(minWidth: 32, minHeight: 32),
+                            ),
+                            Container(
+                              width: 1,
+                              height: 20,
+                              color: Colors.white.withOpacity(0.3),
+                            ),
+                            IconButton(
+                              onPressed: themeProvider.fontSize < 32.0
+                                  ? () {
+                                      themeProvider.increaseFontSize();
+                                      setState(() {}); // Force rebuild
+                                    }
+                                  : null,
+                              icon: Icon(Icons.text_increase,
+                                  color: themeProvider.fontSize < 32.0
+                                      ? Colors.white
+                                      : Colors.white.withOpacity(0.5),
+                                  size: 18),
+                              tooltip: 'Yazıyı Büyült',
+                              padding: EdgeInsets.all(8),
+                              constraints:
+                                  BoxConstraints(minWidth: 32, minHeight: 32),
+                            ),
+                          ],
+                        ),
+                      ),
                       Container(
                         margin: EdgeInsets.only(right: 8),
                         decoration: BoxDecoration(
@@ -376,12 +430,27 @@ class _TextReaderPageState extends State<TextReaderPage> {
                           });
                         }
                       },
+                      onDoubleTap: () {
+                        // Double tap ile font boyutunu sıfırla
+                        themeProvider.resetFontSize();
+                        setState(() {}); // Force rebuild
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Yazı boyutu sıfırlandı'),
+                            duration: Duration(seconds: 1),
+                            behavior: SnackBarBehavior.floating,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                        );
+                      },
                       child: SingleChildScrollView(
                         controller: _scrollController,
                         padding: EdgeInsets.all(24),
                         child: NeuroTextReader(
                           text: _displayText,
-                          fontSize: 18,
+                          fontSize: themeProvider.fontSize,
                         ),
                       ),
                     ),

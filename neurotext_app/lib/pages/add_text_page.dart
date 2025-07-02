@@ -35,6 +35,13 @@ class _AddTextPageState extends State<AddTextPage> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Font size değişikliklerini dinle
+    setState(() {});
+  }
+
+  @override
   void dispose() {
     _controller.dispose();
     super.dispose();
@@ -630,14 +637,15 @@ class _AddTextPageState extends State<AddTextPage> {
                                         'Okumak istediğiniz metni buraya yazın...\n\nÖrnek:\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n\nUt enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
                                     hintStyle: TextStyle(
                                       color: themeProvider.textTertiaryColor,
-                                      fontSize: 16,
+                                      fontSize: themeProvider.fontSize * 0.89,
                                       height: 1.5,
                                     ),
                                     border: InputBorder.none,
                                     contentPadding: EdgeInsets.all(24),
                                   ),
                                   style: TextStyle(
-                                    fontSize: 16,
+                                    fontSize: themeProvider.fontSize *
+                                        0.89, // Slightly smaller for editing
                                     height: 1.6,
                                     color: themeProvider.textPrimaryColor,
                                   ),
@@ -720,7 +728,9 @@ class _AddTextPageState extends State<AddTextPage> {
                                 ),
                               ],
                             ),
-                            child: Row(
+                            child: Wrap(
+                              spacing: 12,
+                              runSpacing: 12,
                               children: [
                                 Container(
                                   padding: EdgeInsets.symmetric(
@@ -748,7 +758,6 @@ class _AddTextPageState extends State<AddTextPage> {
                                     ],
                                   ),
                                 ),
-                                SizedBox(width: 12),
                                 Container(
                                   padding: EdgeInsets.symmetric(
                                       horizontal: 12, vertical: 8),

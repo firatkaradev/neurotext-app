@@ -69,18 +69,20 @@ class ThemeProvider extends StatefulWidget {
 
 class _ThemeProviderState extends State<ThemeProvider> {
   bool _isDarkMode = false;
+  double _fontSize = 18.0; // Default font size
   late Box _settingsBox;
 
   @override
   void initState() {
     super.initState();
-    _loadTheme();
+    _loadSettings();
   }
 
-  void _loadTheme() {
+  void _loadSettings() {
     _settingsBox = Hive.box('settings');
     setState(() {
       _isDarkMode = _settingsBox.get('isDarkMode', defaultValue: false);
+      _fontSize = _settingsBox.get('fontSize', defaultValue: 18.0);
     });
   }
 
@@ -89,6 +91,33 @@ class _ThemeProviderState extends State<ThemeProvider> {
       _isDarkMode = !_isDarkMode;
     });
     await _settingsBox.put('isDarkMode', _isDarkMode);
+  }
+
+  Future<void> increaseFontSize() async {
+    if (_fontSize < 32.0) {
+      // Max font size
+      setState(() {
+        _fontSize += 2.0;
+      });
+      await _settingsBox.put('fontSize', _fontSize);
+    }
+  }
+
+  Future<void> decreaseFontSize() async {
+    if (_fontSize > 12.0) {
+      // Min font size
+      setState(() {
+        _fontSize -= 2.0;
+      });
+      await _settingsBox.put('fontSize', _fontSize);
+    }
+  }
+
+  Future<void> resetFontSize() async {
+    setState(() {
+      _fontSize = 18.0; // Default size
+    });
+    await _settingsBox.put('fontSize', _fontSize);
   }
 
   Color get backgroundColor =>
@@ -124,6 +153,7 @@ class _ThemeProviderState extends State<ThemeProvider> {
       );
 
   bool get isDarkMode => _isDarkMode;
+  double get fontSize => _fontSize;
 
   @override
   Widget build(BuildContext context) {
