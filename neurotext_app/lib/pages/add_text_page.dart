@@ -713,7 +713,9 @@ class _AddTextPageState extends State<AddTextPage> {
                                 ),
                               ],
                             ),
-                            child: Row(
+                            child: Wrap(
+                              spacing: 12,
+                              runSpacing: 12,
                               children: [
                                 Container(
                                   padding: EdgeInsets.symmetric(
@@ -739,7 +741,6 @@ class _AddTextPageState extends State<AddTextPage> {
                                     ],
                                   ),
                                 ),
-                                SizedBox(width: 12),
                                 Container(
                                   padding: EdgeInsets.symmetric(
                                       horizontal: 12, vertical: 8),
