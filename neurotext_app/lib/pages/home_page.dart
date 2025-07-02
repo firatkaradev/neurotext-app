@@ -79,67 +79,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void _deleteArticle(Article article) async {
-    final themeProvider = ThemeProvider.of(context)!;
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: themeProvider.cardColor,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Text(
-          AppLocalizations.of(context)!.deleteArticleTitle,
-          style: TextStyle(
-            fontWeight: FontWeight.w600,
-            color: themeProvider.textPrimaryColor,
-          ),
-        ),
-        content: Text(
-          AppLocalizations.of(context)!.deleteArticleMessage(article.title),
-          style: TextStyle(color: themeProvider.textSecondaryColor),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(AppLocalizations.of(context)!.cancel,
-                style: TextStyle(color: themeProvider.textTertiaryColor)),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: Text(AppLocalizations.of(context)!.delete,
-                style: TextStyle(
-                    color: Colors.red[600], fontWeight: FontWeight.w600)),
-          ),
-        ],
-      ),
-    );
-
-    if (confirmed == true) {
-      try {
-        await ArticleService.deleteArticle(article.id);
-        _loadArticles();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Makale silindi'),
-            backgroundColor: Colors.green[600],
-            behavior: SnackBarBehavior.floating,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          ),
-        );
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Makale silinemedi: $e'),
-            backgroundColor: Colors.red[600],
-            behavior: SnackBarBehavior.floating,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          ),
-        );
-      }
-    }
-  }
-
   void _deleteAllArticles() async {
     if (_articles.isEmpty) return;
 
@@ -591,260 +530,359 @@ class _HomePageState extends State<HomePage> {
                                                   ),
                                                 ],
                                               ),
-                                              child: Material(
-                                                color: Colors.transparent,
-                                                child: InkWell(
-                                                  borderRadius:
-                                                      BorderRadius.circular(20),
-                                                  onTap: () =>
-                                                      _openTextReader(article),
-                                                  child: Padding(
-                                                    padding: EdgeInsets.all(20),
-                                                    child: Row(
-                                                      children: [
-                                                        Container(
-                                                          width: 60,
-                                                          height: 60,
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            gradient: themeProvider
-                                                                .accentGradient,
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        16),
-                                                          ),
-                                                          child: Icon(
-                                                            Icons.article,
-                                                            color: Colors.white,
-                                                            size: 28,
-                                                          ),
+                                              child: Stack(
+                                                children: [
+                                                  Material(
+                                                    color: Colors.transparent,
+                                                    child: InkWell(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              20),
+                                                      onTap: () =>
+                                                          _openTextReader(
+                                                              article),
+                                                      child: Padding(
+                                                        padding:
+                                                            EdgeInsets.all(20),
+                                                        child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Text(
+                                                              article.title,
+                                                              style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w700,
+                                                                fontSize: 18,
+                                                                color: themeProvider
+                                                                    .textPrimaryColor,
+                                                                letterSpacing:
+                                                                    -0.5,
+                                                              ),
+                                                              maxLines: 2,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                            ),
+                                                            SizedBox(height: 8),
+                                                            Text(
+                                                              article.content,
+                                                              maxLines: 2,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              style: TextStyle(
+                                                                color: themeProvider
+                                                                    .textSecondaryColor,
+                                                                fontSize: 14,
+                                                                height: 1.4,
+                                                              ),
+                                                            ),
+                                                            SizedBox(
+                                                                height: 12),
+                                                            Row(
+                                                              children: [
+                                                                Container(
+                                                                  padding: EdgeInsets
+                                                                      .symmetric(
+                                                                          horizontal:
+                                                                              8,
+                                                                          vertical:
+                                                                              4),
+                                                                  decoration:
+                                                                      BoxDecoration(
+                                                                    color: themeProvider
+                                                                            .isDarkMode
+                                                                        ? Colors
+                                                                            .blue[
+                                                                                900]!
+                                                                            .withOpacity(
+                                                                                0.3)
+                                                                        : Colors
+                                                                            .blue[50],
+                                                                    borderRadius:
+                                                                        BorderRadius
+                                                                            .circular(8),
+                                                                  ),
+                                                                  child: Row(
+                                                                    mainAxisSize:
+                                                                        MainAxisSize
+                                                                            .min,
+                                                                    children: [
+                                                                      Icon(
+                                                                          Icons
+                                                                              .schedule,
+                                                                          size:
+                                                                              12,
+                                                                          color:
+                                                                              Colors.blue[600]),
+                                                                      SizedBox(
+                                                                          width:
+                                                                              4),
+                                                                      Text(
+                                                                        '$readingTime dk',
+                                                                        style:
+                                                                            TextStyle(
+                                                                          color:
+                                                                              Colors.blue[600],
+                                                                          fontSize:
+                                                                              12,
+                                                                          fontWeight:
+                                                                              FontWeight.w600,
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                                SizedBox(
+                                                                    width: 8),
+                                                                Container(
+                                                                  padding: EdgeInsets
+                                                                      .symmetric(
+                                                                          horizontal:
+                                                                              8,
+                                                                          vertical:
+                                                                              4),
+                                                                  decoration:
+                                                                      BoxDecoration(
+                                                                    color: themeProvider
+                                                                            .isDarkMode
+                                                                        ? Colors
+                                                                            .purple[
+                                                                                900]!
+                                                                            .withOpacity(
+                                                                                0.3)
+                                                                        : Colors
+                                                                            .purple[50],
+                                                                    borderRadius:
+                                                                        BorderRadius
+                                                                            .circular(8),
+                                                                  ),
+                                                                  child: Row(
+                                                                    mainAxisSize:
+                                                                        MainAxisSize
+                                                                            .min,
+                                                                    children: [
+                                                                      Icon(
+                                                                          Icons
+                                                                              .text_fields,
+                                                                          size:
+                                                                              12,
+                                                                          color:
+                                                                              Colors.purple[600]),
+                                                                      SizedBox(
+                                                                          width:
+                                                                              4),
+                                                                      Text(
+                                                                        '$wordCount',
+                                                                        style:
+                                                                            TextStyle(
+                                                                          color:
+                                                                              Colors.purple[600],
+                                                                          fontSize:
+                                                                              12,
+                                                                          fontWeight:
+                                                                              FontWeight.w600,
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                                Spacer(),
+                                                                Text(
+                                                                  _getRelativeTime(
+                                                                      article
+                                                                          .createdAt),
+                                                                  style:
+                                                                      TextStyle(
+                                                                    color: themeProvider
+                                                                        .textTertiaryColor,
+                                                                    fontSize:
+                                                                        12,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ],
                                                         ),
-                                                        SizedBox(width: 16),
-                                                        Expanded(
-                                                          child: Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              Text(
-                                                                article.title,
-                                                                style:
-                                                                    TextStyle(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w700,
-                                                                  fontSize: 18,
-                                                                  color: themeProvider
-                                                                      .textPrimaryColor,
-                                                                  letterSpacing:
-                                                                      -0.5,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  // Modern delete button
+                                                  Positioned(
+                                                    top: 12,
+                                                    right: 12,
+                                                    child: Container(
+                                                      width: 32,
+                                                      height: 32,
+                                                      decoration: BoxDecoration(
+                                                        color: themeProvider
+                                                                .isDarkMode
+                                                            ? Colors.grey[800]!
+                                                                .withOpacity(
+                                                                    0.8)
+                                                            : Colors.grey[100]!
+                                                                .withOpacity(
+                                                                    0.8),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(16),
+                                                        border: Border.all(
+                                                          color: themeProvider
+                                                                  .isDarkMode
+                                                              ? Colors
+                                                                  .grey[700]!
+                                                              : Colors
+                                                                  .grey[200]!,
+                                                          width: 1,
+                                                        ),
+                                                      ),
+                                                      child: Material(
+                                                        color:
+                                                            Colors.transparent,
+                                                        child: InkWell(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(16),
+                                                          onTap: () async {
+                                                            final confirmed =
+                                                                await showDialog<
+                                                                    bool>(
+                                                              context: context,
+                                                              builder:
+                                                                  (context) =>
+                                                                      AlertDialog(
+                                                                backgroundColor:
+                                                                    themeProvider
+                                                                        .cardColor,
+                                                                shape:
+                                                                    RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              20),
                                                                 ),
-                                                                maxLines: 2,
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .ellipsis,
-                                                              ),
-                                                              SizedBox(
-                                                                  height: 8),
-                                                              Text(
-                                                                article.content,
-                                                                maxLines: 2,
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .ellipsis,
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: themeProvider
-                                                                      .textSecondaryColor,
-                                                                  fontSize: 14,
-                                                                  height: 1.4,
+                                                                title: Text(
+                                                                  AppLocalizations.of(
+                                                                          context)!
+                                                                      .deleteArticleTitle,
+                                                                  style:
+                                                                      TextStyle(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w600,
+                                                                    color: themeProvider
+                                                                        .textPrimaryColor,
+                                                                  ),
                                                                 ),
-                                                              ),
-                                                              SizedBox(
-                                                                  height: 12),
-                                                              Row(
-                                                                children: [
-                                                                  Container(
-                                                                    padding: EdgeInsets.symmetric(
-                                                                        horizontal:
-                                                                            8,
-                                                                        vertical:
-                                                                            4),
-                                                                    decoration:
-                                                                        BoxDecoration(
+                                                                content: Text(
+                                                                  AppLocalizations.of(
+                                                                          context)!
+                                                                      .deleteArticleMessage(
+                                                                          article
+                                                                              .title),
+                                                                  style: TextStyle(
                                                                       color: themeProvider
-                                                                              .isDarkMode
-                                                                          ? Colors
-                                                                              .blue[900]!
-                                                                              .withOpacity(0.3)
-                                                                          : Colors.blue[50],
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              8),
-                                                                    ),
-                                                                    child: Row(
-                                                                      mainAxisSize:
-                                                                          MainAxisSize
-                                                                              .min,
-                                                                      children: [
-                                                                        Icon(
-                                                                            Icons
-                                                                                .schedule,
-                                                                            size:
-                                                                                12,
+                                                                          .textSecondaryColor),
+                                                                ),
+                                                                actions: [
+                                                                  TextButton(
+                                                                    onPressed: () =>
+                                                                        Navigator.of(context)
+                                                                            .pop(false),
+                                                                    child: Text(
+                                                                        AppLocalizations.of(context)!
+                                                                            .cancel,
+                                                                        style: TextStyle(
                                                                             color:
-                                                                                Colors.blue[600]),
-                                                                        SizedBox(
-                                                                            width:
-                                                                                4),
-                                                                        Text(
-                                                                          '$readingTime dk',
-                                                                          style:
-                                                                              TextStyle(
-                                                                            color:
-                                                                                Colors.blue[600],
-                                                                            fontSize:
-                                                                                12,
-                                                                            fontWeight:
-                                                                                FontWeight.w600,
-                                                                          ),
-                                                                        ),
-                                                                      ],
-                                                                    ),
+                                                                                themeProvider.textTertiaryColor)),
                                                                   ),
-                                                                  SizedBox(
-                                                                      width: 8),
-                                                                  Container(
-                                                                    padding: EdgeInsets.symmetric(
-                                                                        horizontal:
-                                                                            8,
-                                                                        vertical:
-                                                                            4),
-                                                                    decoration:
-                                                                        BoxDecoration(
-                                                                      color: themeProvider
-                                                                              .isDarkMode
-                                                                          ? Colors
-                                                                              .purple[900]!
-                                                                              .withOpacity(0.3)
-                                                                          : Colors.purple[50],
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              8),
-                                                                    ),
-                                                                    child: Row(
-                                                                      mainAxisSize:
-                                                                          MainAxisSize
-                                                                              .min,
-                                                                      children: [
-                                                                        Icon(
-                                                                            Icons
-                                                                                .text_fields,
-                                                                            size:
-                                                                                12,
+                                                                  TextButton(
+                                                                    onPressed: () =>
+                                                                        Navigator.of(context)
+                                                                            .pop(true),
+                                                                    child: Text(
+                                                                        AppLocalizations.of(context)!
+                                                                            .delete,
+                                                                        style: TextStyle(
                                                                             color:
-                                                                                Colors.purple[600]),
-                                                                        SizedBox(
-                                                                            width:
-                                                                                4),
-                                                                        Text(
-                                                                          '$wordCount',
-                                                                          style:
-                                                                              TextStyle(
-                                                                            color:
-                                                                                Colors.purple[600],
-                                                                            fontSize:
-                                                                                12,
-                                                                            fontWeight:
-                                                                                FontWeight.w600,
-                                                                          ),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  ),
-                                                                  Spacer(),
-                                                                  Text(
-                                                                    _getRelativeTime(
-                                                                        article
-                                                                            .createdAt),
-                                                                    style:
-                                                                        TextStyle(
-                                                                      color: themeProvider
-                                                                          .textTertiaryColor,
-                                                                      fontSize:
-                                                                          12,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w500,
-                                                                    ),
+                                                                                Colors.red[600],
+                                                                            fontWeight: FontWeight.w600)),
                                                                   ),
                                                                 ],
                                                               ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                        Container(
-                                                          decoration:
-                                                              BoxDecoration(
+                                                            );
+
+                                                            if (confirmed ==
+                                                                true) {
+                                                              try {
+                                                                await ArticleService
+                                                                    .deleteArticle(
+                                                                        article
+                                                                            .id);
+                                                                _loadArticles();
+                                                                ScaffoldMessenger.of(
+                                                                        context)
+                                                                    .showSnackBar(
+                                                                  SnackBar(
+                                                                    content: Text(
+                                                                        AppLocalizations.of(context)!
+                                                                            .articleDeleted),
+                                                                    backgroundColor:
+                                                                        Colors.green[
+                                                                            600],
+                                                                    behavior:
+                                                                        SnackBarBehavior
+                                                                            .floating,
+                                                                    shape: RoundedRectangleBorder(
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(12)),
+                                                                  ),
+                                                                );
+                                                              } catch (e) {
+                                                                ScaffoldMessenger.of(
+                                                                        context)
+                                                                    .showSnackBar(
+                                                                  SnackBar(
+                                                                    content: Text(AppLocalizations.of(
+                                                                            context)!
+                                                                        .articleCouldNotBeDeleted(
+                                                                            e.toString())),
+                                                                    backgroundColor:
+                                                                        Colors.red[
+                                                                            600],
+                                                                    behavior:
+                                                                        SnackBarBehavior
+                                                                            .floating,
+                                                                    shape: RoundedRectangleBorder(
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(12)),
+                                                                  ),
+                                                                );
+                                                              }
+                                                            }
+                                                          },
+                                                          child: Icon(
+                                                            Icons
+                                                                .delete_outline,
+                                                            size: 16,
                                                             color: themeProvider
                                                                     .isDarkMode
                                                                 ? Colors
-                                                                    .grey[800]
+                                                                    .grey[400]
                                                                 : Colors
-                                                                    .grey[50],
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        12),
-                                                          ),
-                                                          child:
-                                                              PopupMenuButton(
-                                                            icon: Icon(
-                                                                Icons.more_vert,
-                                                                color: themeProvider
-                                                                    .textSecondaryColor),
-                                                            surfaceTintColor:
-                                                                themeProvider
-                                                                    .cardColor,
-                                                            color: themeProvider
-                                                                .cardColor,
-                                                            itemBuilder:
-                                                                (context) => [
-                                                              PopupMenuItem(
-                                                                value: 'delete',
-                                                                child: Row(
-                                                                  children: [
-                                                                    Icon(
-                                                                        Icons
-                                                                            .delete,
-                                                                        color: Colors
-                                                                            .red[600]),
-                                                                    SizedBox(
-                                                                        width:
-                                                                            8),
-                                                                    Text('Sil',
-                                                                        style: TextStyle(
-                                                                            color:
-                                                                                themeProvider.textPrimaryColor)),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                            ],
-                                                            onSelected:
-                                                                (value) {
-                                                              if (value ==
-                                                                  'delete') {
-                                                                _deleteArticle(
-                                                                    article);
-                                                              }
-                                                            },
+                                                                    .grey[600],
                                                           ),
                                                         ),
-                                                      ],
+                                                      ),
                                                     ),
                                                   ),
-                                                ),
+                                                ],
                                               ),
                                             );
                                           },
