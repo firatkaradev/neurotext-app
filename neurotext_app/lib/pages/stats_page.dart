@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../main.dart';
 import '../services/stats_service.dart';
+import '../services/achievements_service.dart';
 import '../models/reading_stats.dart';
 
 class StatsPage extends StatefulWidget {
@@ -728,134 +729,483 @@ class _StatsPageState extends State<StatsPage> with TickerProviderStateMixin {
 
   Widget _buildAchievementsCard() {
     final themeProvider = ThemeProvider.of(context)!;
-    final totalMinutes = _totalStats['totalMinutes'] ?? 0;
-    final totalWords = _totalStats['totalWords'] ?? 0;
 
-    final achievements = [
-      {
-        'title': 'Yeni Başlayan',
-        'description': 'İlk metninizi okudunuz',
-        'achieved': totalMinutes > 0,
-        'icon': Icons.star,
-        'color': Colors.blue,
-      },
-      {
-        'title': 'Okuma Tutkunu',
-        'description': '1000 kelime okudunuz',
-        'achieved': totalWords >= 1000,
-        'icon': Icons.local_fire_department,
-        'color': Colors.orange,
-      },
-      {
-        'title': 'Kitap Kurdu',
-        'description': '10000 kelime okudunuz',
-        'achieved': totalWords >= 10000,
-        'icon': Icons.library_books,
-        'color': Colors.green,
-      },
-      {
-        'title': 'Süreklilik',
-        'description': '7 gün art arda okudunuz',
-        'achieved': _readingStreak >= 7,
-        'icon': Icons.trending_up,
-        'color': Colors.purple,
-      },
-    ];
-
-    return Container(
-      padding: EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: themeProvider.cardColor,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color:
-                Colors.black.withOpacity(themeProvider.isDarkMode ? 0.2 : 0.05),
-            blurRadius: 15,
-            offset: Offset(0, 5),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Başarımlar',
-            style: TextStyle(
-              color: themeProvider.textPrimaryColor,
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
+    return FutureBuilder<Map<String, dynamic>>(
+      future: AchievementsService.getUserStats(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Container(
+            height: 200,
+            padding: EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: themeProvider.cardColor,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black
+                      .withOpacity(themeProvider.isDarkMode ? 0.2 : 0.05),
+                  blurRadius: 20,
+                  offset: Offset(0, 5),
+                ),
+              ],
             ),
-          ),
-          SizedBox(height: 16),
-          for (final achievement in achievements)
-            Container(
-              margin: EdgeInsets.only(bottom: 12),
-              padding: EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: themeProvider.isDarkMode
-                    ? Colors.grey[850]
-                    : Colors.grey[50],
-                borderRadius: BorderRadius.circular(12),
+            child: Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        final userStats = snapshot.data!;
+        final unlockedAchievements =
+            AchievementsService.getUnlockedAchievements(userStats);
+        final totalPoints =
+            AchievementsService.getTotalPoints(unlockedAchievements);
+        final userLevel = AchievementsService.getUserLevel(totalPoints);
+
+        return Container(
+          padding: EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: themeProvider.cardColor,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black
+                    .withOpacity(themeProvider.isDarkMode ? 0.2 : 0.05),
+                blurRadius: 15,
+                offset: Offset(0, 5),
               ),
-              child: Row(
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
                 children: [
-                  Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: achievement['achieved'] as bool
-                          ? (achievement['color'] as MaterialColor)[500]
-                          : (themeProvider.isDarkMode
-                              ? Colors.grey[700]
-                              : Colors.grey[300]),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Icon(
-                      achievement['icon'] as IconData,
-                      color: achievement['achieved'] as bool
-                          ? Colors.white
-                          : (themeProvider.isDarkMode
-                              ? Colors.grey[400]
-                              : Colors.grey[600]),
-                      size: 20,
+                  Text(
+                    'Başarımlar',
+                    style: TextStyle(
+                      color: themeProvider.textPrimaryColor,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
-                  SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          achievement['title'] as String,
-                          style: TextStyle(
-                            color: achievement['achieved'] as bool
-                                ? themeProvider.textPrimaryColor
-                                : themeProvider.textTertiaryColor,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        Text(
-                          achievement['description'] as String,
+                  Spacer(),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      gradient: themeProvider.accentGradient,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      'Seviye $userLevel',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 8),
+              Text(
+                '${unlockedAchievements.length}/${AchievementsService.getAllAchievements().length} başarım • $totalPoints puan',
+                style: TextStyle(
+                  color: themeProvider.textSecondaryColor,
+                  fontSize: 12,
+                ),
+              ),
+              SizedBox(height: 16),
+
+              // Progress bar
+              Container(
+                height: 8,
+                decoration: BoxDecoration(
+                  color: themeProvider.isDarkMode
+                      ? Colors.grey[800]
+                      : Colors.grey[200],
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: FractionallySizedBox(
+                  widthFactor: unlockedAchievements.length /
+                      AchievementsService.getAllAchievements().length,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: themeProvider.accentGradient,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 16),
+
+              // Recent achievements (show first 5 unlocked)
+              Text(
+                'Son Kazanılan Başarımlar',
+                style: TextStyle(
+                  color: themeProvider.textSecondaryColor,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              SizedBox(height: 12),
+
+              if (unlockedAchievements.isEmpty)
+                Container(
+                  padding: EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: themeProvider.isDarkMode
+                        ? Colors.grey[850]
+                        : Colors.grey[50],
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.emoji_events_outlined,
+                          color: themeProvider.textTertiaryColor, size: 24),
+                      SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          'Henüz başarım kazanmadınız. Okumaya devam edin!',
                           style: TextStyle(
                             color: themeProvider.textTertiaryColor,
-                            fontSize: 12,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              else
+                for (final achievement in unlockedAchievements.take(5))
+                  Container(
+                    margin: EdgeInsets.only(bottom: 8),
+                    padding: EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: themeProvider.isDarkMode
+                          ? Colors.grey[850]
+                          : Colors.grey[50],
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 32,
+                          height: 32,
+                          decoration: BoxDecoration(
+                            gradient: themeProvider.accentGradient,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Center(
+                            child: Text(
+                              achievement.icon,
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                achievement.title,
+                                style: TextStyle(
+                                  color: themeProvider.textPrimaryColor,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              Text(
+                                achievement.description,
+                                style: TextStyle(
+                                  color: themeProvider.textTertiaryColor,
+                                  fontSize: 11,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: Colors.amber[100],
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            '+${achievement.points}',
+                            style: TextStyle(
+                              color: Colors.amber[800],
+                              fontSize: 10,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
                       ],
                     ),
                   ),
-                  if (achievement['achieved'] as bool)
-                    Icon(
-                      Icons.check_circle,
-                      color: (achievement['color'] as MaterialColor)[500],
-                      size: 20,
+
+              SizedBox(height: 16),
+              Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  gradient: themeProvider.accentGradient,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: TextButton(
+                  onPressed: () => _showAllAchievements(),
+                  child: Text(
+                    'Tüm Başarımları Gör (${AchievementsService.getAllAchievements().length})',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
                     ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showAllAchievements() async {
+    final themeProvider = ThemeProvider.of(context)!;
+    final userStats = await AchievementsService.getUserStats();
+    final categorizedAchievements =
+        AchievementsService.getAchievementsByCategory();
+    final unlockedAchievements =
+        AchievementsService.getUnlockedAchievements(userStats);
+    final totalPoints =
+        AchievementsService.getTotalPoints(unlockedAchievements);
+    final userLevel = AchievementsService.getUserLevel(totalPoints);
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        height: MediaQuery.of(context).size.height * 0.85,
+        decoration: BoxDecoration(
+          color: themeProvider.surfaceColor,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(25),
+            topRight: Radius.circular(25),
+          ),
+        ),
+        child: Column(
+          children: [
+            // Handle
+            Container(
+              margin: EdgeInsets.only(top: 12),
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: themeProvider.textTertiaryColor,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+
+            // Header
+            Padding(
+              padding: EdgeInsets.all(20),
+              child: Row(
+                children: [
+                  Text(
+                    'Tüm Başarımlar',
+                    style: TextStyle(
+                      color: themeProvider.textPrimaryColor,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  Spacer(),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      gradient: themeProvider.accentGradient,
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Text(
+                      'Seviye $userLevel • $totalPoints XP',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
-        ],
+
+            // Categories list
+            Expanded(
+              child: ListView.builder(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                itemCount: categorizedAchievements.keys.length,
+                itemBuilder: (context, index) {
+                  final category =
+                      categorizedAchievements.keys.elementAt(index);
+                  final achievements = categorizedAchievements[category]!;
+                  final unlockedInCategory =
+                      achievements.where((a) => a.isUnlocked(userStats)).length;
+
+                  return Container(
+                    margin: EdgeInsets.only(bottom: 16),
+                    decoration: BoxDecoration(
+                      color: themeProvider.cardColor,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(
+                              themeProvider.isDarkMode ? 0.2 : 0.05),
+                          blurRadius: 15,
+                          offset: Offset(0, 5),
+                        ),
+                      ],
+                    ),
+                    child: ExpansionTile(
+                      tilePadding: EdgeInsets.symmetric(horizontal: 16),
+                      childrenPadding:
+                          EdgeInsets.only(left: 16, right: 16, bottom: 16),
+                      backgroundColor: Colors.transparent,
+                      collapsedBackgroundColor: Colors.transparent,
+                      iconColor: themeProvider.textPrimaryColor,
+                      collapsedIconColor: themeProvider.textSecondaryColor,
+                      title: Row(
+                        children: [
+                          Text(
+                            category,
+                            style: TextStyle(
+                              color: themeProvider.textPrimaryColor,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Spacer(),
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: themeProvider.isDarkMode
+                                  ? Colors.grey[800]
+                                  : Colors.grey[100],
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Text(
+                              '$unlockedInCategory/${achievements.length}',
+                              style: TextStyle(
+                                color: themeProvider.textSecondaryColor,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      children: [
+                        for (final achievement in achievements)
+                          Container(
+                            margin: EdgeInsets.only(bottom: 8),
+                            padding: EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: themeProvider.isDarkMode
+                                  ? Colors.grey[850]
+                                  : Colors.grey[50],
+                              borderRadius: BorderRadius.circular(12),
+                              border: achievement.isUnlocked(userStats)
+                                  ? Border.all(
+                                      color: Colors.green[300]!, width: 1)
+                                  : null,
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 40,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                    gradient: achievement.isUnlocked(userStats)
+                                        ? themeProvider.accentGradient
+                                        : null,
+                                    color: !achievement.isUnlocked(userStats)
+                                        ? (themeProvider.isDarkMode
+                                            ? Colors.grey[700]
+                                            : Colors.grey[300])
+                                        : null,
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Center(
+                                    child: achievement.isUnlocked(userStats)
+                                        ? Text(achievement.icon,
+                                            style: TextStyle(fontSize: 20))
+                                        : Icon(Icons.lock,
+                                            color:
+                                                themeProvider.textTertiaryColor,
+                                            size: 20),
+                                  ),
+                                ),
+                                SizedBox(width: 12),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        achievement.title,
+                                        style: TextStyle(
+                                          color: achievement
+                                                  .isUnlocked(userStats)
+                                              ? themeProvider.textPrimaryColor
+                                              : themeProvider.textTertiaryColor,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                      Text(
+                                        achievement.description,
+                                        style: TextStyle(
+                                          color:
+                                              themeProvider.textTertiaryColor,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 8, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    color: achievement.isUnlocked(userStats)
+                                        ? Colors.amber[100]
+                                        : (themeProvider.isDarkMode
+                                            ? Colors.grey[800]
+                                            : Colors.grey[100]),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Text(
+                                    '${achievement.points} XP',
+                                    style: TextStyle(
+                                      color: achievement.isUnlocked(userStats)
+                                          ? Colors.amber[800]
+                                          : themeProvider.textTertiaryColor,
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
