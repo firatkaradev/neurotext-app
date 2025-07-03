@@ -636,6 +636,9 @@ class _StoriesPageState extends State<StoriesPage> {
                                                             color: themeProvider
                                                                 .textPrimaryColor,
                                                             letterSpacing: -0.5,
+                                                            fontFamily:
+                                                                themeProvider
+                                                                    .fontFamily,
                                                           ),
                                                           maxLines: 2,
                                                           overflow: TextOverflow
@@ -663,6 +666,9 @@ class _StoriesPageState extends State<StoriesPage> {
                                                                 .textSecondaryColor,
                                                             fontSize: 13,
                                                             height: 1.4,
+                                                            fontFamily:
+                                                                themeProvider
+                                                                    .fontFamily,
                                                           ),
                                                         ),
                                                         SizedBox(height: 12),

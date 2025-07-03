@@ -134,6 +134,7 @@ class ThemeProvider extends StatefulWidget {
 class _ThemeProviderState extends State<ThemeProvider> {
   bool _isDarkMode = false;
   double _fontSize = 18.0; // Default font size
+  String _fontFamily = 'Roboto'; // Default font family
   late Box _settingsBox;
 
   @override
@@ -147,6 +148,7 @@ class _ThemeProviderState extends State<ThemeProvider> {
     setState(() {
       _isDarkMode = _settingsBox.get('isDarkMode', defaultValue: false);
       _fontSize = _settingsBox.get('fontSize', defaultValue: 18.0);
+      _fontFamily = _settingsBox.get('fontFamily', defaultValue: 'Roboto');
     });
   }
 
@@ -184,6 +186,13 @@ class _ThemeProviderState extends State<ThemeProvider> {
     await _settingsBox.put('fontSize', _fontSize);
   }
 
+  Future<void> changeFontFamily(String fontFamily) async {
+    setState(() {
+      _fontFamily = fontFamily;
+    });
+    await _settingsBox.put('fontFamily', _fontFamily);
+  }
+
   Color get backgroundColor =>
       _isDarkMode ? Color(0xFF0F0F23) : Color(0xFF1E3C72);
   Color get secondaryBackgroundColor =>
@@ -201,6 +210,7 @@ class _ThemeProviderState extends State<ThemeProvider> {
       _isDarkMode ? Color(0xFF808080) : Colors.grey[500]!;
 
   double get fontSize => _fontSize;
+  String get fontFamily => _fontFamily;
 
   LinearGradient get primaryGradient => LinearGradient(
         begin: Alignment.topLeft,

@@ -208,6 +208,20 @@ class _SettingsPageState extends State<SettingsPage> {
 
                         SizedBox(height: 32),
 
+                        // Font Selection Section
+                        _buildSectionHeader('Font Seçimi', Icons.font_download),
+                        SizedBox(height: 16),
+                        _buildSettingsCard([
+                          _buildSettingItem(
+                            title: 'Font Ailesi',
+                            subtitle: themeProvider.fontFamily,
+                            icon: Icons.text_format,
+                            onTap: () => _showFontSelection(),
+                          ),
+                        ]),
+
+                        SizedBox(height: 32),
+
                         // Reading Section
                         _buildSectionHeader('Okuma', Icons.auto_stories),
                         SizedBox(height: 16),
@@ -818,6 +832,255 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  void _showFontSelection() {
+    final themeProvider = ThemeProvider.of(context)!;
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setModalState) => Container(
+          height: MediaQuery.of(context).size.height * 0.85,
+          decoration: BoxDecoration(
+            color: themeProvider.cardColor,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+            ),
+          ),
+          child: Column(
+            children: [
+              // Header
+              Container(
+                padding: EdgeInsets.all(20),
+                child: Column(
+                  children: [
+                    Container(
+                      width: 40,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: themeProvider.textTertiaryColor,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    Text(
+                      'Font Seçimi',
+                      style: TextStyle(
+                        color: themeProvider.textPrimaryColor,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Preview Section
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Preview Text Editor
+                      Text(
+                        'Önizleme Metni',
+                        style: TextStyle(
+                          color: themeProvider.textPrimaryColor,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      SizedBox(height: 12),
+                      _buildPreviewTextEditor(themeProvider),
+
+                      SizedBox(height: 32),
+
+                      // Font Options
+                      Text(
+                        'Font Seçenekleri',
+                        style: TextStyle(
+                          color: themeProvider.textPrimaryColor,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      SizedBox(height: 16),
+
+                      ..._getFontOptions(themeProvider, setModalState),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  String _previewText =
+      'Bu örnek metin ile seçtiğiniz fontun nasıl göründüğünü görebilirsiniz. Metni düzenleyerek kendi örnek metninizi de yazabilirsiniz.';
+
+  Widget _buildPreviewTextEditor(themeProvider) {
+    return Container(
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: themeProvider.isDarkMode ? Colors.grey[850] : Colors.grey[50],
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color:
+              themeProvider.isDarkMode ? Colors.grey[700]! : Colors.grey[300]!,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TextField(
+            maxLines: 4,
+            style: TextStyle(
+              color: themeProvider.textPrimaryColor,
+              fontSize: themeProvider.fontSize,
+              fontFamily: themeProvider.fontFamily,
+            ),
+            decoration: InputDecoration(
+              hintText: 'Örnek metni düzenleyin...',
+              hintStyle: TextStyle(color: themeProvider.textTertiaryColor),
+              border: InputBorder.none,
+            ),
+            onChanged: (value) {
+              setState(() {
+                _previewText = value.isNotEmpty
+                    ? value
+                    : 'Bu örnek metin ile seçtiğiniz fontun nasıl göründüğünü görebilirsiniz. Metni düzenleyerek kendi örnek metninizi de yazabilirsiniz.';
+              });
+            },
+            controller: TextEditingController(text: _previewText),
+          ),
+          SizedBox(height: 12),
+          Container(
+            padding: EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              gradient: themeProvider.accentGradient,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Text(
+              _previewText,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: themeProvider.fontSize,
+                fontFamily: themeProvider.fontFamily,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  List<Widget> _getFontOptions(themeProvider, setModalState) {
+    final fonts = [
+      {'name': 'Roboto', 'description': 'Modern ve okunabilir'},
+      {'name': 'Poppins', 'description': 'Zarif ve temiz'},
+      {'name': 'Lora', 'description': 'Serifli ve klasik'},
+      {'name': 'Pacifico', 'description': 'El yazısı tarzı'},
+      {'name': 'Caveat', 'description': 'Rahat el yazısı'},
+      {'name': 'DancingScript', 'description': 'Zarif el yazısı'},
+      {'name': 'Domine', 'description': 'Okuma için serifli'},
+      {'name': 'IndieFlower', 'description': 'Sevimli ve samimi'},
+      {'name': 'NotoSerifGeorgian', 'description': 'Klasik serifli'},
+      {'name': 'ManufacturingConsent', 'description': 'Özel tasarım'},
+    ];
+
+    return fonts
+        .map((font) => _buildFontOption(
+              font['name']!,
+              font['description']!,
+              themeProvider,
+              setModalState,
+            ))
+        .toList();
+  }
+
+  Widget _buildFontOption(
+      String fontName, String description, themeProvider, setModalState) {
+    final isSelected = themeProvider.fontFamily == fontName;
+
+    return Container(
+      margin: EdgeInsets.only(bottom: 12),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            themeProvider.changeFontFamily(fontName);
+            setModalState(() {});
+            setState(() {});
+          },
+          borderRadius: BorderRadius.circular(12),
+          child: Container(
+            padding: EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color:
+                  themeProvider.isDarkMode ? Colors.grey[850] : Colors.grey[50],
+              borderRadius: BorderRadius.circular(12),
+              border: isSelected
+                  ? Border.all(color: Colors.blue[500]!, width: 2)
+                  : null,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            fontName,
+                            style: TextStyle(
+                              color: themeProvider.textPrimaryColor,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              fontFamily: fontName,
+                            ),
+                          ),
+                          Text(
+                            description,
+                            style: TextStyle(
+                              color: themeProvider.textTertiaryColor,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    if (isSelected)
+                      Icon(Icons.check_circle,
+                          color: Colors.blue[500], size: 24),
+                  ],
+                ),
+                SizedBox(height: 12),
+                Text(
+                  _previewText,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: themeProvider.textSecondaryColor,
+                    fontSize: 14,
+                    fontFamily: fontName,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

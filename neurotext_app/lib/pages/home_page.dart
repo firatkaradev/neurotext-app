@@ -700,6 +700,9 @@ class _HomePageState extends State<HomePage> {
                                                             color: themeProvider
                                                                 .textPrimaryColor,
                                                             letterSpacing: -0.5,
+                                                            fontFamily:
+                                                                themeProvider
+                                                                    .fontFamily,
                                                           ),
                                                           maxLines: 2,
                                                           overflow: TextOverflow
@@ -716,6 +719,9 @@ class _HomePageState extends State<HomePage> {
                                                                 .textSecondaryColor,
                                                             fontSize: 14,
                                                             height: 1.4,
+                                                            fontFamily:
+                                                                themeProvider
+                                                                    .fontFamily,
                                                           ),
                                                         ),
                                                         SizedBox(height: 12),

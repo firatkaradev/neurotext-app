@@ -550,6 +550,7 @@ class NeuroTextWidget extends StatelessWidget {
       color: themeProvider.textPrimaryColor,
       height: 1.6,
       letterSpacing: 0.3,
+      fontFamily: themeProvider.fontFamily,
     );
 
     if (text.trim().isEmpty) {
