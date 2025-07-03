@@ -43,6 +43,13 @@ dependencies:
   # Hive for local storage
   hive: ^2.2.3
   hive_flutter: ^1.1.0
+  
+  # PDF processing
+  syncfusion_flutter_pdf: ^29.1.38
+  file_picker: ^6.1.1
+  
+  # Additional utilities
+  uuid: ^4.0.0
 
 dev_dependencies:
   flutter_test:

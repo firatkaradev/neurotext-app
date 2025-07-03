@@ -4,9 +4,11 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'models/article.dart';
 import 'models/reading_stats.dart';
 import 'models/story.dart';
+import 'models/novel.dart';
 import 'services/article_service.dart';
 import 'services/stats_service.dart';
 import 'services/story_service.dart';
+import 'services/novel_service.dart';
 import 'pages/home_page.dart';
 import 'pages/onboarding_page.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -21,11 +23,14 @@ void main() async {
   Hive.registerAdapter(ArticleAdapter());
   Hive.registerAdapter(ReadingStatsAdapter());
   Hive.registerAdapter(StoryAdapter());
+  Hive.registerAdapter(NovelAdapter());
+  Hive.registerAdapter(NovelChapterAdapter());
 
   // Initialize services
   await ArticleService.init();
   await StoryService.initializePreloadedStories();
   await StatsService.init();
+  await NovelService.init();
 
   // Settings box for theme
   await Hive.openBox('settings');
@@ -195,6 +200,8 @@ class _ThemeProviderState extends State<ThemeProvider> {
   Color get textTertiaryColor =>
       _isDarkMode ? Color(0xFF808080) : Colors.grey[500]!;
 
+  double get fontSize => _fontSize;
+
   LinearGradient get primaryGradient => LinearGradient(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
@@ -212,7 +219,6 @@ class _ThemeProviderState extends State<ThemeProvider> {
       );
 
   bool get isDarkMode => _isDarkMode;
-  double get fontSize => _fontSize;
 
   @override
   Widget build(BuildContext context) {
