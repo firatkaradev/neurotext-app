@@ -24,7 +24,9 @@ class StatsService {
   static Future<void> addReadingSession({
     required int readingTimeMinutes,
     required int wordsRead,
-    required int articlesRead,
+    int articlesRead = 0,
+    int chaptersRead = 0,
+    int novelsCompleted = 0,
   }) async {
     try {
       final today = ReadingStats.todayKey();
@@ -35,6 +37,8 @@ class StatsService {
         existingStats.readingTimeMinutes += readingTimeMinutes;
         existingStats.wordsRead += wordsRead;
         existingStats.articlesRead += articlesRead;
+        existingStats.chaptersRead += chaptersRead;
+        existingStats.novelsCompleted += novelsCompleted;
         existingStats.sessionEnd = DateTime.now();
         await existingStats.save();
       } else {
@@ -44,6 +48,8 @@ class StatsService {
           readingTimeMinutes: readingTimeMinutes,
           wordsRead: wordsRead,
           articlesRead: articlesRead,
+          chaptersRead: chaptersRead,
+          novelsCompleted: novelsCompleted,
           sessionStart: DateTime.now(),
           sessionEnd: DateTime.now(),
         );
@@ -52,6 +58,27 @@ class StatsService {
     } catch (e) {
       print('Error adding reading session: $e');
     }
+  }
+
+  // Add chapter reading session
+  static Future<void> addChapterReading({
+    required int readingTimeMinutes,
+    required int wordsRead,
+  }) async {
+    await addReadingSession(
+      readingTimeMinutes: readingTimeMinutes,
+      wordsRead: wordsRead,
+      chaptersRead: 1,
+    );
+  }
+
+  // Add novel completion
+  static Future<void> addNovelCompletion() async {
+    await addReadingSession(
+      readingTimeMinutes: 0,
+      wordsRead: 0,
+      novelsCompleted: 1,
+    );
   }
 
   // Get today's stats
@@ -138,12 +165,16 @@ class StatsService {
       int totalMinutes = 0;
       int totalWords = 0;
       int totalArticles = 0;
+      int totalChapters = 0;
+      int totalNovels = 0;
       int totalDays = 0;
 
       for (final stats in _box.values) {
         totalMinutes += stats.readingTimeMinutes;
         totalWords += stats.wordsRead;
         totalArticles += stats.articlesRead;
+        totalChapters += stats.chaptersRead;
+        totalNovels += stats.novelsCompleted;
         if (stats.readingTimeMinutes > 0) totalDays++;
       }
 
@@ -151,6 +182,8 @@ class StatsService {
         'totalMinutes': totalMinutes,
         'totalWords': totalWords,
         'totalArticles': totalArticles,
+        'totalChapters': totalChapters,
+        'totalNovels': totalNovels,
         'totalDays': totalDays,
       };
     } catch (e) {
@@ -159,6 +192,8 @@ class StatsService {
         'totalMinutes': 0,
         'totalWords': 0,
         'totalArticles': 0,
+        'totalChapters': 0,
+        'totalNovels': 0,
         'totalDays': 0,
       };
     }

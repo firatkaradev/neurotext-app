@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../models/novel.dart';
 import '../services/novel_service.dart';
 import '../main.dart';
@@ -170,7 +171,7 @@ class _NovelChaptersPageState extends State<NovelChaptersPage> {
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Text(
-                                'Devam Et',
+                                AppLocalizations.of(context)!.continueReading,
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 12,

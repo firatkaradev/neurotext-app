@@ -5,6 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 import 'package:uuid/uuid.dart';
 import '../models/novel.dart';
+import 'stats_service.dart';
 
 class NovelService {
   static late Box<Novel> _novelBox;
@@ -188,7 +189,25 @@ class NovelService {
       final chapterIndex =
           novel.chapters.indexWhere((ch) => ch.id == chapterId);
       if (chapterIndex != -1) {
-        novel.chapters[chapterIndex].markAsRead();
+        final chapter = novel.chapters[chapterIndex];
+
+        // Only add stats if chapter wasn't already read
+        if (!chapter.isRead) {
+          chapter.markAsRead();
+
+          // Add chapter reading stats
+          await StatsService.addChapterReading(
+            readingTimeMinutes:
+                (chapter.wordCount / 200).ceil(), // Estimate reading time
+            wordsRead: chapter.wordCount,
+          );
+
+          // Check if novel is completed
+          final allChaptersRead = novel.chapters.every((ch) => ch.isRead);
+          if (allChaptersRead) {
+            await StatsService.addNovelCompletion();
+          }
+        }
 
         // Update current chapter index if this was the current chapter
         if (chapterIndex == novel.currentChapterIndex) {

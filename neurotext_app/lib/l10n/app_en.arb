@@ -179,5 +179,126 @@
       }
     }
   },
-  "noTextToSave": "No text found to save"
+  "noTextToSave": "No text found to save",
+  "novels": "Novels",
+  "chapters": "Chapters",
+  "chapter": "Chapter",
+  "novel": "Novel",
+  "noNovelsTitle": "No Novels Yet",
+  "noNovelsSubtitle": "Import PDF files to start reading novels",
+  "importPdf": "Import PDF",
+  "importing": "Importing...",
+  "novelImportedSuccessfully": "Novel imported successfully: {title}",
+  "@novelImportedSuccessfully": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "pdfImportFailed": "PDF import failed: {error}",
+  "@pdfImportFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteNovel": "Delete Novel",
+  "deleteNovelMessage": "Are you sure you want to delete the novel \"{title}\"? This action cannot be undone.",
+  "@deleteNovelMessage": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "novelDeleted": "Novel deleted",
+  "novelCouldNotBeDeleted": "Novel could not be deleted: {error}",
+  "@novelCouldNotBeDeleted": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "novelsCouldNotBeLoaded": "Novels could not be loaded: {error}",
+  "@novelsCouldNotBeLoaded": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "searchNovels": "Search novels...",
+  "noSearchResults": "No search results found",
+  "chapterCount": "{count} chapters",
+  "@chapterCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "totalReadingTime": "{time}",
+  "@totalReadingTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "progress": "Progress",
+  "completed": "{completed}% completed",
+  "@completed": {
+    "placeholders": {
+      "completed": {
+        "type": "double"
+      }
+    }
+  },
+  "continueReading": "Continue",
+  "read": "Read",
+  "chaptersRead": "{read} / {total} chapters",
+  "@chaptersRead": {
+    "placeholders": {
+      "read": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "chapterMarkedAsRead": "Chapter marked as read",
+  "statusCouldNotBeUpdated": "Status could not be updated: {error}",
+  "@statusCouldNotBeUpdated": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "readingTime": "{time} reading",
+  "@readingTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "words": "{count} words",
+  "@words": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chaptersReadStats": "Chapters",
+  "novelsCompletedStats": "Novels",
+  "totalChapters": "Total Chapters",
+  "totalNovels": "Total Novels",
+  "completedNovel": "Completed Novel",
+  "completedNovels": "novels"
 } 

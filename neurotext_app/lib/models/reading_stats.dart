@@ -22,6 +22,12 @@ class ReadingStats extends HiveObject {
   @HiveField(5)
   DateTime sessionEnd;
 
+  @HiveField(6)
+  int chaptersRead;
+
+  @HiveField(7)
+  int novelsCompleted;
+
   ReadingStats({
     required this.date,
     required this.readingTimeMinutes,
@@ -29,6 +35,8 @@ class ReadingStats extends HiveObject {
     required this.articlesRead,
     required this.sessionStart,
     required this.sessionEnd,
+    this.chaptersRead = 0,
+    this.novelsCompleted = 0,
   });
 
   // Helper methods

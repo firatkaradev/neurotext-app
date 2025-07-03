@@ -253,6 +253,8 @@ class _StatsPageState extends State<StatsPage> with TickerProviderStateMixin {
     final todayMinutes = _todayStats?.readingTimeMinutes ?? 0;
     final todayWords = _todayStats?.wordsRead ?? 0;
     final todayArticles = _todayStats?.articlesRead ?? 0;
+    final todayChapters = _todayStats?.chaptersRead ?? 0;
+    final todayNovels = _todayStats?.novelsCompleted ?? 0;
 
     return SingleChildScrollView(
       padding: EdgeInsets.symmetric(horizontal: 20),
@@ -282,14 +284,40 @@ class _StatsPageState extends State<StatsPage> with TickerProviderStateMixin {
             ],
           ),
           SizedBox(height: 12),
-          _buildStatCard(
-            title: 'Okunan Makale',
-            value: todayArticles.toString(),
-            suffix: 'makale',
-            icon: Icons.article,
-            color: Colors.green,
-            isWide: true,
+          Row(
+            children: [
+              Expanded(
+                child: _buildStatCard(
+                  title: 'Makale',
+                  value: todayArticles.toString(),
+                  suffix: '',
+                  icon: Icons.article,
+                  color: Colors.green,
+                ),
+              ),
+              SizedBox(width: 12),
+              Expanded(
+                child: _buildStatCard(
+                  title: 'Bölüm',
+                  value: todayChapters.toString(),
+                  suffix: '',
+                  icon: Icons.menu_book,
+                  color: Colors.teal,
+                ),
+              ),
+            ],
           ),
+          if (todayNovels > 0) ...[
+            SizedBox(height: 12),
+            _buildStatCard(
+              title: 'Tamamlanan Roman',
+              value: todayNovels.toString(),
+              suffix: 'roman',
+              icon: Icons.auto_stories,
+              color: Colors.amber,
+              isWide: true,
+            ),
+          ],
           SizedBox(height: 24),
           _buildProgressCard(),
         ],
@@ -303,6 +331,10 @@ class _StatsPageState extends State<StatsPage> with TickerProviderStateMixin {
     final weekWords = _weekStats.fold(0, (sum, stat) => sum + stat.wordsRead);
     final weekArticles =
         _weekStats.fold(0, (sum, stat) => sum + stat.articlesRead);
+    final weekChapters =
+        _weekStats.fold(0, (sum, stat) => sum + stat.chaptersRead);
+    final weekNovels =
+        _weekStats.fold(0, (sum, stat) => sum + stat.novelsCompleted);
     final activeDays =
         _weekStats.where((stat) => stat.readingTimeMinutes > 0).length;
 
@@ -357,6 +389,30 @@ class _StatsPageState extends State<StatsPage> with TickerProviderStateMixin {
               ),
             ],
           ),
+          SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: _buildStatCard(
+                  title: 'Bölüm',
+                  value: weekChapters.toString(),
+                  suffix: '',
+                  icon: Icons.menu_book,
+                  color: Colors.teal,
+                ),
+              ),
+              SizedBox(width: 12),
+              Expanded(
+                child: _buildStatCard(
+                  title: 'Roman',
+                  value: weekNovels.toString(),
+                  suffix: '',
+                  icon: Icons.auto_stories,
+                  color: Colors.amber,
+                ),
+              ),
+            ],
+          ),
           SizedBox(height: 24),
           _buildWeekChart(),
         ],
@@ -368,6 +424,8 @@ class _StatsPageState extends State<StatsPage> with TickerProviderStateMixin {
     final totalMinutes = _totalStats['totalMinutes'] ?? 0;
     final totalWords = _totalStats['totalWords'] ?? 0;
     final totalArticles = _totalStats['totalArticles'] ?? 0;
+    final totalChapters = _totalStats['totalChapters'] ?? 0;
+    final totalNovels = _totalStats['totalNovels'] ?? 0;
     final totalDays = _totalStats['totalDays'] ?? 0;
 
     return SingleChildScrollView(
@@ -417,6 +475,30 @@ class _StatsPageState extends State<StatsPage> with TickerProviderStateMixin {
                   suffix: '',
                   icon: Icons.article,
                   color: Colors.green,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: _buildStatCard(
+                  title: 'Toplam Bölüm',
+                  value: totalChapters.toString(),
+                  suffix: '',
+                  icon: Icons.menu_book,
+                  color: Colors.teal,
+                ),
+              ),
+              SizedBox(width: 12),
+              Expanded(
+                child: _buildStatCard(
+                  title: 'Toplam Roman',
+                  value: totalNovels.toString(),
+                  suffix: '',
+                  icon: Icons.auto_stories,
+                  color: Colors.amber,
                 ),
               ),
             ],
