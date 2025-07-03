@@ -486,6 +486,8 @@ class _TextReaderPageState extends State<TextReaderPage> {
                         child: NeuroTextReader(
                           text: _displayText,
                           fontSize: themeProvider.fontSize,
+                          isLineTransitionsEnabled:
+                              themeProvider.isLineTransitionsEnabled,
                         ),
                       ),
                     ),
@@ -503,11 +505,13 @@ class _TextReaderPageState extends State<TextReaderPage> {
 class NeuroTextReader extends StatefulWidget {
   final String text;
   final double fontSize;
+  final bool isLineTransitionsEnabled;
 
   const NeuroTextReader({
     Key? key,
     required this.text,
     this.fontSize = 16,
+    this.isLineTransitionsEnabled = true,
   }) : super(key: key);
 
   @override
@@ -523,6 +527,7 @@ class _NeuroTextReaderState extends State<NeuroTextReader> {
           text: widget.text,
           fontSize: widget.fontSize,
           maxWidth: constraints.maxWidth,
+          isLineTransitionsEnabled: widget.isLineTransitionsEnabled,
         );
       },
     );
@@ -533,12 +538,14 @@ class NeuroTextWidget extends StatelessWidget {
   final String text;
   final double fontSize;
   final double maxWidth;
+  final bool isLineTransitionsEnabled;
 
   const NeuroTextWidget({
     Key? key,
     required this.text,
     required this.fontSize,
     required this.maxWidth,
+    this.isLineTransitionsEnabled = true,
   }) : super(key: key);
 
   @override
@@ -699,8 +706,8 @@ class NeuroTextWidget extends StatelessWidget {
               transitionIndex % 2 == 0 ? Colors.pink[200] : Colors.blue[200];
         }
 
-        // Gradient efekti için kelimeyi parçalara böl
-        if (baseHighlightColor != null) {
+        // Gradient efekti için kelimeyi parçalara böl (ayar açıksa)
+        if (baseHighlightColor != null && isLineTransitionsEnabled) {
           final wordSpans = _createGradientWordSpans(
             word,
             baseHighlightColor,
