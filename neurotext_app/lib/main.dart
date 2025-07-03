@@ -32,13 +32,50 @@ void main() async {
   await StatsService.init();
   await NovelService.init();
 
-  // Settings box for theme
+  // Settings box for theme and locale
   await Hive.openBox('settings');
 
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  Locale _currentLocale = Locale('tr'); // Default to Turkish
+  late Box _settingsBox;
+
+  @override
+  void initState() {
+    super.initState();
+    _appState = this;
+    _loadLocale();
+  }
+
+  @override
+  void dispose() {
+    _appState = null;
+    super.dispose();
+  }
+
+  void _loadLocale() {
+    _settingsBox = Hive.box('settings');
+    final savedLanguageCode =
+        _settingsBox.get('languageCode', defaultValue: 'tr');
+    setState(() {
+      _currentLocale = Locale(savedLanguageCode);
+    });
+  }
+
+  void changeLocale(String languageCode) async {
+    setState(() {
+      _currentLocale = Locale(languageCode);
+    });
+    await _settingsBox.put('languageCode', languageCode);
+  }
+
   @override
   Widget build(BuildContext context) {
     return ThemeProvider(
@@ -61,6 +98,7 @@ class MyApp extends StatelessWidget {
           Locale('fr'), // French
           Locale('de'), // German
         ],
+        locale: _currentLocale,
         home: _getInitialPage(),
         debugShowCheckedModeBanner: false,
       ),
@@ -115,6 +153,19 @@ class MyApp extends StatelessWidget {
     } catch (e) {
       return false;
     }
+  }
+}
+
+// Global instance for accessing locale change function
+_MyAppState? _appState;
+
+class LocaleService {
+  static void changeLocale(String languageCode) {
+    _appState?.changeLocale(languageCode);
+  }
+
+  static Locale getCurrentLocale() {
+    return _appState?._currentLocale ?? Locale('tr');
   }
 }
 

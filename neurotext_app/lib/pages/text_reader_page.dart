@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../main.dart';
 import '../models/article.dart';
 import '../services/article_service.dart';
@@ -24,17 +25,8 @@ class _TextReaderPageState extends State<TextReaderPage> {
   bool _isPaused = false;
   bool _isManualScrolling = false;
 
-  // Speed modes
-  final List<Map<String, dynamic>> _speedModes = [
-    {'name': 'Yavaş', 'speed': 1.0, 'icon': Icons.speed, 'color': Colors.green},
-    {'name': 'Normal', 'speed': 3.0, 'icon': Icons.speed, 'color': Colors.blue},
-    {
-      'name': 'Hızlı',
-      'speed': 5.0,
-      'icon': Icons.speed,
-      'color': Colors.orange
-    },
-  ];
+  // Speed modes - will be populated with localized strings in build method
+  List<Map<String, dynamic>> _speedModes = [];
   int _currentSpeedIndex = 1; // Normal başlangıç
 
   String _displayText = '';
@@ -185,13 +177,13 @@ class _TextReaderPageState extends State<TextReaderPage> {
     }
   }
 
-  String _getToggleTooltip() {
+  String _getToggleTooltip(BuildContext context) {
     if (_isManualScrolling) {
-      return 'Live Moda Geç';
+      return AppLocalizations.of(context)!.switchToLiveMode;
     } else if (_isAutoScrolling) {
-      return 'Manuel Moda Geç';
+      return AppLocalizations.of(context)!.switchToManualMode;
     } else {
-      return 'Başlat';
+      return AppLocalizations.of(context)!.start;
     }
   }
 
@@ -199,7 +191,7 @@ class _TextReaderPageState extends State<TextReaderPage> {
     if (_displayText.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Kaydedilecek metin bulunamadı'),
+          content: Text(AppLocalizations.of(context)!.noTextToSave),
           backgroundColor: Colors.orange[600],
           behavior: SnackBarBehavior.floating,
           shape:
@@ -215,7 +207,8 @@ class _TextReaderPageState extends State<TextReaderPage> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Makale kaydedildi: ${article.title}'),
+          content:
+              Text(AppLocalizations.of(context)!.articleSaved(article.title)),
           backgroundColor: Colors.green[600],
           behavior: SnackBarBehavior.floating,
           shape:
@@ -226,7 +219,8 @@ class _TextReaderPageState extends State<TextReaderPage> {
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Makale kaydedilemedi: $e'),
+          content: Text(AppLocalizations.of(context)!
+              .articleCouldNotBeSaved(e.toString())),
           backgroundColor: Colors.red[600],
           behavior: SnackBarBehavior.floating,
           shape:
@@ -267,6 +261,30 @@ class _TextReaderPageState extends State<TextReaderPage> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = ThemeProvider.of(context)!;
+
+    // Initialize speed modes with localized strings
+    if (_speedModes.isEmpty) {
+      _speedModes = [
+        {
+          'name': AppLocalizations.of(context)!.slow,
+          'speed': 1.0,
+          'icon': Icons.speed,
+          'color': Colors.green
+        },
+        {
+          'name': AppLocalizations.of(context)!.normal,
+          'speed': 3.0,
+          'icon': Icons.speed,
+          'color': Colors.blue
+        },
+        {
+          'name': AppLocalizations.of(context)!.fast,
+          'speed': 5.0,
+          'icon': Icons.speed,
+          'color': Colors.orange
+        },
+      ];
+    }
 
     return Scaffold(
       body: Container(
@@ -325,7 +343,8 @@ class _TextReaderPageState extends State<TextReaderPage> {
                                       ? Colors.white
                                       : Colors.white.withOpacity(0.5),
                                   size: 18),
-                              tooltip: 'Yazıyı Küçült',
+                              tooltip:
+                                  AppLocalizations.of(context)!.decreaseText,
                               padding: EdgeInsets.all(8),
                               constraints:
                                   BoxConstraints(minWidth: 32, minHeight: 32),
@@ -347,7 +366,8 @@ class _TextReaderPageState extends State<TextReaderPage> {
                                       ? Colors.white
                                       : Colors.white.withOpacity(0.5),
                                   size: 18),
-                              tooltip: 'Yazıyı Büyült',
+                              tooltip:
+                                  AppLocalizations.of(context)!.increaseText,
                               padding: EdgeInsets.all(8),
                               constraints:
                                   BoxConstraints(minWidth: 32, minHeight: 32),
@@ -367,7 +387,7 @@ class _TextReaderPageState extends State<TextReaderPage> {
                           onPressed: _saveCurrentArticle,
                           icon: Icon(Icons.bookmark_add,
                               color: Colors.white, size: 20),
-                          tooltip: 'Makaleyi Kaydet',
+                          tooltip: AppLocalizations.of(context)!.saveArticle,
                         ),
                       ),
                       Container(
@@ -420,7 +440,7 @@ class _TextReaderPageState extends State<TextReaderPage> {
                           onPressed: _toggleAutoScroll,
                           icon: Icon(_getToggleIcon(),
                               color: Colors.white, size: 20),
-                          tooltip: _getToggleTooltip(),
+                          tooltip: _getToggleTooltip(context),
                         ),
                       ),
                     ],
@@ -471,7 +491,8 @@ class _TextReaderPageState extends State<TextReaderPage> {
                         setState(() {}); // Force rebuild
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text('Yazı boyutu sıfırlandı'),
+                            content: Text(
+                                AppLocalizations.of(context)!.textSizeReset),
                             duration: Duration(seconds: 1),
                             behavior: SnackBarBehavior.floating,
                             shape: RoundedRectangleBorder(
@@ -578,7 +599,7 @@ class NeuroTextWidget extends StatelessWidget {
               ),
               SizedBox(height: 24),
               Text(
-                'Henüz metin yüklenmemiş',
+                AppLocalizations.of(context)!.noTextLoaded,
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
@@ -587,7 +608,7 @@ class NeuroTextWidget extends StatelessWidget {
               ),
               SizedBox(height: 8),
               Text(
-                'Okumak istediğiniz metni ekleyin',
+                AppLocalizations.of(context)!.addTextToRead,
                 style: TextStyle(
                   fontSize: 14,
                   color: themeProvider.textSecondaryColor,

@@ -37,12 +37,14 @@ class _HomePageState extends State<HomePage> {
   Future<void> _loadArticles() async {
     try {
       final articles = await ArticleService.getAllArticles();
+      if (!mounted) return;
       setState(() {
         _articles = articles;
         _filteredArticles = articles;
         _isLoading = false;
       });
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         _isLoading = false;
       });
@@ -55,6 +57,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _filterArticles() {
+    if (!mounted) return;
     final query = _searchController.text.toLowerCase();
     setState(() {
       _filteredArticles = _articles.where((article) {
@@ -93,25 +96,26 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: themeProvider.cardColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: Text(
-          'Tüm Makaleleri Sil',
+          AppLocalizations.of(context)!.deleteAllArticles,
           style: TextStyle(
             fontWeight: FontWeight.w600,
             color: themeProvider.textPrimaryColor,
           ),
         ),
         content: Text(
-          '${_articles.length} makaleyi silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.',
+          AppLocalizations.of(context)!
+              .deleteAllArticlesConfirmation(_articles.length.toString()),
           style: TextStyle(color: themeProvider.textSecondaryColor),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: Text('İptal',
+            child: Text(AppLocalizations.of(context)!.cancel,
                 style: TextStyle(color: themeProvider.textTertiaryColor)),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: Text('Tümünü Sil',
+            child: Text(AppLocalizations.of(context)!.deleteAll,
                 style: TextStyle(
                     color: Colors.red[600], fontWeight: FontWeight.w600)),
           ),
@@ -125,7 +129,7 @@ class _HomePageState extends State<HomePage> {
         _loadArticles();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Tüm makaleler silindi'),
+            content: Text(AppLocalizations.of(context)!.allArticlesDeleted),
             backgroundColor: Colors.green[600],
             behavior: SnackBarBehavior.floating,
             shape:
@@ -135,7 +139,8 @@ class _HomePageState extends State<HomePage> {
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Makaleler silinemedi: $e'),
+            content: Text(AppLocalizations.of(context)!
+                .articlesCouldNotBeDeleted(e.toString())),
             backgroundColor: Colors.red[600],
             behavior: SnackBarBehavior.floating,
             shape:
@@ -203,7 +208,7 @@ class _HomePageState extends State<HomePage> {
           ),
           SizedBox(height: 32),
           Text(
-            'Henüz Makale Yok',
+            AppLocalizations.of(context)!.noArticlesYet,
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.w700,
@@ -213,7 +218,7 @@ class _HomePageState extends State<HomePage> {
           ),
           SizedBox(height: 12),
           Text(
-            'İlk metninizi ekleyerek\ngelişmiş okuma deneyimini başlayın',
+            AppLocalizations.of(context)!.startAdvancedReading,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 16,
@@ -253,7 +258,7 @@ class _HomePageState extends State<HomePage> {
                       Icon(Icons.add, color: Colors.white, size: 24),
                       SizedBox(width: 12),
                       Text(
-                        'İlk Metni Ekle',
+                        AppLocalizations.of(context)!.addFirstText,
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
@@ -306,7 +311,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                             SizedBox(width: 8),
                             Text(
-                              'Romanlar',
+                              AppLocalizations.of(context)!.novels,
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
@@ -356,7 +361,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                             SizedBox(width: 8),
                             Text(
-                              'Hikayeler',
+                              AppLocalizations.of(context)!.stories,
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,

@@ -47,7 +47,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Ayarlar',
+                            AppLocalizations.of(context)!.settings,
                             style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.w800,
@@ -56,7 +56,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             ),
                           ),
                           Text(
-                            'Uygulamayı özelleştirin',
+                            AppLocalizations.of(context)!.settingsSubtitle,
                             style: TextStyle(
                               fontSize: 14,
                               color: Colors.white.withOpacity(0.8),
@@ -88,14 +88,16 @@ class _SettingsPageState extends State<SettingsPage> {
                         SizedBox(height: 10),
 
                         // Appearance Section
-                        _buildSectionHeader('Görünüm', Icons.palette),
+                        _buildSectionHeader(
+                            AppLocalizations.of(context)!.appearance,
+                            Icons.palette),
                         SizedBox(height: 16),
                         _buildSettingsCard([
                           _buildSettingItem(
-                            title: 'Tema',
+                            title: AppLocalizations.of(context)!.theme,
                             subtitle: themeProvider.isDarkMode
-                                ? 'Koyu tema'
-                                : 'Açık tema',
+                                ? AppLocalizations.of(context)!.darkTheme
+                                : AppLocalizations.of(context)!.lightTheme,
                             icon: themeProvider.isDarkMode
                                 ? Icons.dark_mode
                                 : Icons.light_mode,
@@ -115,7 +117,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                   ? Colors.grey[800]
                                   : Colors.grey[200]),
                           _buildSettingItem(
-                            title: 'Yazı Boyutu',
+                            title: AppLocalizations.of(context)!.fontSize,
                             subtitle: '${themeProvider.fontSize.toInt()}px',
                             icon: Icons.text_fields,
                             trailing: Row(
@@ -209,7 +211,9 @@ class _SettingsPageState extends State<SettingsPage> {
                         SizedBox(height: 32),
 
                         // Font Selection Section
-                        _buildSectionHeader('Font Seçimi', Icons.font_download),
+                        _buildSectionHeader(
+                            AppLocalizations.of(context)!.fontSelection,
+                            Icons.font_download),
                         SizedBox(height: 16),
                         _buildSettingsCard([
                           _buildSettingItem(
@@ -223,12 +227,15 @@ class _SettingsPageState extends State<SettingsPage> {
                         SizedBox(height: 32),
 
                         // Reading Section
-                        _buildSectionHeader('Okuma', Icons.auto_stories),
+                        _buildSectionHeader(
+                            AppLocalizations.of(context)!.reading,
+                            Icons.auto_stories),
                         SizedBox(height: 16),
                         _buildSettingsCard([
                           _buildSettingItem(
-                            title: 'Varsayılan Okuma Hızı',
-                            subtitle: 'Normal hız',
+                            title: AppLocalizations.of(context)!
+                                .defaultReadingSpeed,
+                            subtitle: AppLocalizations.of(context)!.normalSpeed,
                             icon: Icons.speed,
                             onTap: () => _showSpeedSettings(),
                           ),
@@ -238,8 +245,9 @@ class _SettingsPageState extends State<SettingsPage> {
                                   ? Colors.grey[800]
                                   : Colors.grey[200]),
                           _buildSettingItem(
-                            title: 'Biyonik Okuma',
-                            subtitle: 'Her zaman aktif',
+                            title: AppLocalizations.of(context)!.bionicReading,
+                            subtitle: AppLocalizations.of(context)!
+                                .bionicReadingSubtitle,
                             icon: Icons.visibility,
                             trailing: Icon(Icons.info_outline,
                                 color: themeProvider.textTertiaryColor,
@@ -252,10 +260,13 @@ class _SettingsPageState extends State<SettingsPage> {
                                   ? Colors.grey[800]
                                   : Colors.grey[200]),
                           _buildSettingItem(
-                            title: 'Satır Geçiş Vurgusu',
+                            title:
+                                AppLocalizations.of(context)!.lineTransitions,
                             subtitle: themeProvider.isLineTransitionsEnabled
-                                ? 'Aktif - Satır geçişleri renkli'
-                                : 'Kapalı - Sadece biyonik okuma',
+                                ? AppLocalizations.of(context)!
+                                    .lineTransitionsOn
+                                : AppLocalizations.of(context)!
+                                    .lineTransitionsOff,
                             icon: Icons.gradient,
                             trailing: Switch(
                               value: themeProvider.isLineTransitionsEnabled,
@@ -273,11 +284,13 @@ class _SettingsPageState extends State<SettingsPage> {
                         SizedBox(height: 32),
 
                         // App Section
-                        _buildSectionHeader('Uygulama', Icons.apps),
+                        _buildSectionHeader(
+                            AppLocalizations.of(context)!.application,
+                            Icons.apps),
                         SizedBox(height: 16),
                         _buildSettingsCard([
                           _buildSettingItem(
-                            title: 'Dil',
+                            title: AppLocalizations.of(context)!.language,
                             subtitle: _getLanguageName(),
                             icon: Icons.language,
                             onTap: () => _showLanguageSettings(),
@@ -288,8 +301,8 @@ class _SettingsPageState extends State<SettingsPage> {
                                   ? Colors.grey[800]
                                   : Colors.grey[200]),
                           _buildSettingItem(
-                            title: 'Uygulama Hakkında',
-                            subtitle: 'Sürüm 1.0.0',
+                            title: AppLocalizations.of(context)!.aboutApp,
+                            subtitle: AppLocalizations.of(context)!.version,
                             icon: Icons.info,
                             onTap: () => _showAboutDialog(),
                           ),
@@ -299,8 +312,9 @@ class _SettingsPageState extends State<SettingsPage> {
                                   ? Colors.grey[800]
                                   : Colors.grey[200]),
                           _buildSettingItem(
-                            title: 'Gizlilik Politikası',
-                            subtitle: 'Verilerinizi nasıl koruduğumuz',
+                            title: AppLocalizations.of(context)!.privacyPolicy,
+                            subtitle: AppLocalizations.of(context)!
+                                .privacyPolicySubtitle,
                             icon: Icons.privacy_tip,
                             onTap: () => _showPrivacyPolicy(),
                           ),
@@ -346,7 +360,8 @@ class _SettingsPageState extends State<SettingsPage> {
                               ),
                               SizedBox(height: 8),
                               Text(
-                                'Gelişmiş okuma deneyimi için tasarlandı',
+                                AppLocalizations.of(context)!
+                                    .designedForAdvancedReading,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   color: Colors.white.withOpacity(0.9),
@@ -485,7 +500,7 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   String _getLanguageName() {
-    final locale = Localizations.localeOf(context);
+    final locale = LocaleService.getCurrentLocale();
     switch (locale.languageCode) {
       case 'tr':
         return 'Türkçe';
@@ -536,12 +551,21 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ),
             SizedBox(height: 20),
-            _buildSpeedOption('Yavaş', 'Rahat okuma için',
-                Icons.slow_motion_video, Colors.green),
             _buildSpeedOption(
-                'Normal', 'Önerilen hız', Icons.directions_walk, Colors.blue),
-            _buildSpeedOption('Hızlı', 'Hızlı okuyucular için',
-                Icons.directions_run, Colors.orange),
+                AppLocalizations.of(context)!.slow,
+                AppLocalizations.of(context)!.comfortableReading,
+                Icons.slow_motion_video,
+                Colors.green),
+            _buildSpeedOption(
+                AppLocalizations.of(context)!.normal,
+                AppLocalizations.of(context)!.recommendedSpeed,
+                Icons.directions_walk,
+                Colors.blue),
+            _buildSpeedOption(
+                AppLocalizations.of(context)!.fast,
+                AppLocalizations.of(context)!.fastReaders,
+                Icons.directions_run,
+                Colors.orange),
             SizedBox(height: 20),
           ],
         ),
@@ -566,7 +590,7 @@ class _SettingsPageState extends State<SettingsPage> {
               color:
                   themeProvider.isDarkMode ? Colors.grey[850] : Colors.grey[50],
               borderRadius: BorderRadius.circular(12),
-              border: title == 'Normal'
+              border: title == AppLocalizations.of(context)!.normal
                   ? Border.all(color: color[500]!, width: 2)
                   : null,
             ),
@@ -604,7 +628,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ],
                   ),
                 ),
-                if (title == 'Normal')
+                if (title == AppLocalizations.of(context)!.normal)
                   Icon(Icons.check_circle, color: color[500], size: 24),
               ],
             ),
@@ -627,7 +651,7 @@ class _SettingsPageState extends State<SettingsPage> {
             Icon(Icons.visibility, color: Colors.purple[600]),
             SizedBox(width: 12),
             Text(
-              'Biyonik Okuma',
+              AppLocalizations.of(context)!.bionicReadingTitle,
               style: TextStyle(
                 color: themeProvider.textPrimaryColor,
                 fontWeight: FontWeight.w600,
@@ -636,14 +660,14 @@ class _SettingsPageState extends State<SettingsPage> {
           ],
         ),
         content: Text(
-          'Biyonik okuma, kelimelerin ilk harflerini kalın yaparak okuma hızınızı artırır. Bu özellik her zaman aktiftir ve okuma deneyiminizi geliştirir.',
+          AppLocalizations.of(context)!.bionicReadingDescription,
           style: TextStyle(color: themeProvider.textSecondaryColor),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
             child: Text(
-              'Anladım',
+              AppLocalizations.of(context)!.understood,
               style: TextStyle(
                 color: Colors.purple[600],
                 fontWeight: FontWeight.w600,
@@ -678,7 +702,7 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             SizedBox(width: 12),
             Text(
-              'Satır Geçiş Vurgusu',
+              AppLocalizations.of(context)!.lineTransitionsTitle,
               style: TextStyle(
                 color: themeProvider.textPrimaryColor,
                 fontWeight: FontWeight.w600,
@@ -692,7 +716,7 @@ class _SettingsPageState extends State<SettingsPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                '🎯 Neden Çok Önemli?',
+                AppLocalizations.of(context)!.whyVeryImportant,
                 style: TextStyle(
                   color: themeProvider.textPrimaryColor,
                   fontWeight: FontWeight.w600,
@@ -701,12 +725,12 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               SizedBox(height: 8),
               Text(
-                'Satır geçiş vurgusu, okuma deneyiminizi köklü olarak iyileştiren devrim niteliğinde bir özelliktir:',
+                AppLocalizations.of(context)!.lineTransitionsDescription,
                 style: TextStyle(color: themeProvider.textSecondaryColor),
               ),
               SizedBox(height: 16),
               Text(
-                '✨ Özellikler:',
+                AppLocalizations.of(context)!.features,
                 style: TextStyle(
                   color: themeProvider.textPrimaryColor,
                   fontWeight: FontWeight.w600,
@@ -714,12 +738,7 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               SizedBox(height: 8),
               Text(
-                '• Hangi satırda kaldığınızı anında görürsünüz\n'
-                '• Gözleriniz yorulmaz, satır takibi kolaylaşır\n'
-                '• Pembe-mavi gradient geçişlerle satır sınırları belirginleşir\n'
-                '• Uzun metinlerde kaybolma problemi ortadan kalkar\n'
-                '• Okuma hızınız %30-40 artar\n'
-                '• Dikkat dağınıklığı azalır',
+                AppLocalizations.of(context)!.lineTransitionsFeatures,
                 style: TextStyle(
                   color: themeProvider.textSecondaryColor,
                   height: 1.5,
@@ -790,7 +809,7 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             SizedBox(height: 20),
             Text(
-              'Dil Seçimi',
+              AppLocalizations.of(context)!.languageSelection,
               style: TextStyle(
                 color: themeProvider.textPrimaryColor,
                 fontSize: 18,
@@ -811,7 +830,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Widget _buildLanguageOption(String flag, String name, String code) {
     final themeProvider = ThemeProvider.of(context)!;
-    final currentLocale = Localizations.localeOf(context);
+    final currentLocale = LocaleService.getCurrentLocale();
     final isSelected = currentLocale.languageCode == code;
 
     return Container(
@@ -819,7 +838,11 @@ class _SettingsPageState extends State<SettingsPage> {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: () => Navigator.pop(context),
+          onTap: () async {
+            LocaleService.changeLocale(code);
+            Navigator.pop(context);
+            setState(() {}); // Update the UI to reflect the change
+          },
           borderRadius: BorderRadius.circular(12),
           child: Container(
             padding: EdgeInsets.all(16),

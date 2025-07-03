@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../main.dart';
 import 'text_reader_page.dart';
 
@@ -68,7 +69,7 @@ class _AddTextPageState extends State<AddTextPage> {
       if (clipboardText.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Panoda metin bulunamadı'),
+            content: Text(AppLocalizations.of(context)!.noTextInClipboard),
             backgroundColor: Colors.orange[600],
             behavior: SnackBarBehavior.floating,
             shape:
@@ -108,7 +109,7 @@ class _AddTextPageState extends State<AddTextPage> {
               SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  'Panodan Yapıştır',
+                  AppLocalizations.of(context)!.pasteFromClipboardTitle,
                   style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
                 ),
               ),
@@ -119,7 +120,7 @@ class _AddTextPageState extends State<AddTextPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Panoda metin bulundu:',
+                AppLocalizations.of(context)!.clipboardTextFound,
                 style: TextStyle(fontSize: 14, color: Colors.grey[600]),
               ),
               SizedBox(height: 12),
@@ -149,7 +150,7 @@ class _AddTextPageState extends State<AddTextPage> {
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Text(
-                      '$wordCount kelime',
+                      AppLocalizations.of(context)!.words(wordCount),
                       style: TextStyle(
                         fontSize: 11,
                         color: Colors.blue[600],
@@ -165,7 +166,7 @@ class _AddTextPageState extends State<AddTextPage> {
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Text(
-                      '~$readingTime dk',
+                      AppLocalizations.of(context)!.minutes(readingTime),
                       style: TextStyle(
                         fontSize: 11,
                         color: Colors.green[600],
@@ -178,8 +179,8 @@ class _AddTextPageState extends State<AddTextPage> {
               SizedBox(height: 16),
               Text(
                 _controller.text.trim().isNotEmpty
-                    ? 'Mevcut metin değiştirilecek!'
-                    : 'Bu metni yapıştırmak istediğinizden emin misiniz?',
+                    ? AppLocalizations.of(context)!.currentTextWillBeReplaced
+                    : AppLocalizations.of(context)!.confirmPasteText,
                 style: TextStyle(
                   fontSize: 14,
                   color: _controller.text.trim().isNotEmpty
@@ -195,7 +196,8 @@ class _AddTextPageState extends State<AddTextPage> {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: Text('İptal', style: TextStyle(color: Colors.grey[600])),
+              child: Text(AppLocalizations.of(context)!.cancel,
+                  style: TextStyle(color: Colors.grey[600])),
             ),
             Container(
               decoration: BoxDecoration(
@@ -207,7 +209,7 @@ class _AddTextPageState extends State<AddTextPage> {
               child: TextButton(
                 onPressed: () => Navigator.of(context).pop(true),
                 child: Text(
-                  'Yapıştır',
+                  AppLocalizations.of(context)!.paste,
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
@@ -226,7 +228,7 @@ class _AddTextPageState extends State<AddTextPage> {
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Metin panodan yapıştırıldı'),
+            content: Text(AppLocalizations.of(context)!.textPastedSuccessfully),
             backgroundColor: Colors.green[600],
             behavior: SnackBarBehavior.floating,
             shape:
@@ -251,7 +253,7 @@ class _AddTextPageState extends State<AddTextPage> {
     if (_controller.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Lütfen okumak istediğiniz metni girin'),
+          content: Text(AppLocalizations.of(context)!.pleaseWriteTextFirst),
           backgroundColor: Colors.orange[600],
           behavior: SnackBarBehavior.floating,
           shape:
@@ -275,20 +277,21 @@ class _AddTextPageState extends State<AddTextPage> {
       builder: (context) => AlertDialog(
         backgroundColor: Colors.white.withOpacity(0.95),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Text('Metni Temizle',
+        title: Text(AppLocalizations.of(context)!.clearTextTitle,
             style: TextStyle(fontWeight: FontWeight.w600)),
-        content: Text('Girdiğiniz metin silinecek. Emin misiniz?'),
+        content: Text(AppLocalizations.of(context)!.clearTextConfirmation),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Text('İptal', style: TextStyle(color: Colors.grey[600])),
+            child: Text(AppLocalizations.of(context)!.cancel,
+                style: TextStyle(color: Colors.grey[600])),
           ),
           TextButton(
             onPressed: () {
               _controller.clear();
               Navigator.of(context).pop();
             },
-            child: Text('Temizle',
+            child: Text(AppLocalizations.of(context)!.clear,
                 style: TextStyle(
                     color: Colors.red[600], fontWeight: FontWeight.w600)),
           ),
@@ -341,7 +344,7 @@ class _AddTextPageState extends State<AddTextPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Metin Girişi',
+                            AppLocalizations.of(context)!.textInput,
                             style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.w800,
@@ -350,7 +353,7 @@ class _AddTextPageState extends State<AddTextPage> {
                             ),
                           ),
                           Text(
-                            'Okumak istediğiniz metni yazın',
+                            AppLocalizations.of(context)!.writeTextHere,
                             style: TextStyle(
                               fontSize: 14,
                               color: Colors.white.withOpacity(0.8),
@@ -383,7 +386,8 @@ class _AddTextPageState extends State<AddTextPage> {
                           onPressed: _pasteFromClipboard,
                           icon: Icon(Icons.content_paste,
                               color: Colors.white, size: 20),
-                          tooltip: 'Panodan Yapıştır',
+                          tooltip:
+                              AppLocalizations.of(context)!.pasteFromClipboard,
                         ),
                       ),
                     if (!_isTextEmpty) ...[
@@ -399,7 +403,7 @@ class _AddTextPageState extends State<AddTextPage> {
                           onPressed: _clearText,
                           icon:
                               Icon(Icons.clear, color: Colors.white, size: 20),
-                          tooltip: 'Metni Temizle',
+                          tooltip: AppLocalizations.of(context)!.clearText,
                         ),
                       ),
                       Container(
@@ -422,7 +426,7 @@ class _AddTextPageState extends State<AddTextPage> {
                           onPressed: _startReading,
                           icon: Icon(Icons.play_circle_filled,
                               color: Colors.white, size: 24),
-                          tooltip: 'Okumaya Başla',
+                          tooltip: AppLocalizations.of(context)!.startReading,
                         ),
                       ),
                     ],
@@ -499,7 +503,8 @@ class _AddTextPageState extends State<AddTextPage> {
                                           ),
                                         ),
                                         Text(
-                                          'Gelişmiş okuma deneyimi için hazır',
+                                          AppLocalizations.of(context)!
+                                              .designedForAdvancedReading,
                                           style: TextStyle(
                                             color: themeProvider
                                                 .textSecondaryColor,
@@ -633,8 +638,8 @@ class _AddTextPageState extends State<AddTextPage> {
                                   expands: true,
                                   textAlignVertical: TextAlignVertical.top,
                                   decoration: InputDecoration(
-                                    hintText:
-                                        'Okumak istediğiniz metni buraya yazın...\n\nÖrnek:\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n\nUt enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+                                    hintText: AppLocalizations.of(context)!
+                                        .textInputPlaceholder,
                                     hintStyle: TextStyle(
                                       color: themeProvider.textTertiaryColor,
                                       fontSize: themeProvider.fontSize * 0.89,
@@ -692,7 +697,8 @@ class _AddTextPageState extends State<AddTextPage> {
                                                     size: 18),
                                                 SizedBox(width: 8),
                                                 Text(
-                                                  'Yapıştır',
+                                                  AppLocalizations.of(context)!
+                                                      .paste,
                                                   style: TextStyle(
                                                     color: Colors.white,
                                                     fontWeight: FontWeight.w600,
@@ -748,7 +754,8 @@ class _AddTextPageState extends State<AddTextPage> {
                                           size: 16, color: Colors.blue[600]),
                                       SizedBox(width: 6),
                                       Text(
-                                        '$wordCount kelime',
+                                        AppLocalizations.of(context)!
+                                            .words(wordCount),
                                         style: TextStyle(
                                           color: Colors.blue[600],
                                           fontSize: 13,
@@ -774,7 +781,9 @@ class _AddTextPageState extends State<AddTextPage> {
                                           size: 16, color: Colors.purple[600]),
                                       SizedBox(width: 6),
                                       Text(
-                                        '${_controller.text.length} karakter',
+                                        AppLocalizations.of(context)!
+                                            .characterCount(
+                                                _controller.text.length),
                                         style: TextStyle(
                                           color: Colors.purple[600],
                                           fontSize: 13,
@@ -801,7 +810,9 @@ class _AddTextPageState extends State<AddTextPage> {
                                           size: 16, color: Colors.green[600]),
                                       SizedBox(width: 6),
                                       Text(
-                                        '~$readingTime dk',
+                                        AppLocalizations.of(context)!
+                                            .readingTime(
+                                                readingTime.toString()),
                                         style: TextStyle(
                                           color: Colors.green[600],
                                           fontSize: 13,
@@ -851,8 +862,9 @@ class _AddTextPageState extends State<AddTextPage> {
                                 size: 24),
                             label: Text(
                               _isTextEmpty
-                                  ? 'Önce metin yazın'
-                                  : 'Okumaya Başla',
+                                  ? AppLocalizations.of(context)!
+                                      .pleaseWriteTextFirst
+                                  : AppLocalizations.of(context)!.startReading,
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w700,

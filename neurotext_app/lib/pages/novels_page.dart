@@ -33,20 +33,24 @@ class _NovelsPageState extends State<NovelsPage> {
   Future<void> _loadNovels() async {
     try {
       final novels = await NovelService.getAllNovels();
+      if (!mounted) return;
       setState(() {
         _novels = novels;
         _filteredNovels = novels;
         _isLoading = false;
       });
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         _isLoading = false;
       });
-      _showErrorSnackBar('Romanlar yüklenemedi: $e');
+      _showErrorSnackBar(
+          AppLocalizations.of(context)!.novelsCouldNotBeLoaded(e.toString()));
     }
   }
 
   void _filterNovels() {
+    if (!mounted) return;
     final query = _searchController.text.toLowerCase();
     setState(() {
       _filteredNovels = _novels.where((novel) {
@@ -56,19 +60,25 @@ class _NovelsPageState extends State<NovelsPage> {
   }
 
   Future<void> _importPdfNovel() async {
+    if (!mounted) return;
     setState(() {
       _isImporting = true;
     });
 
     try {
       final novel = await NovelService.importFromPdf();
+      if (!mounted) return;
       if (novel != null) {
-        _showSuccessSnackBar('Roman başarıyla içe aktarıldı: ${novel.title}');
+        _showSuccessSnackBar(AppLocalizations.of(context)!
+            .novelImportedSuccessfully(novel.title));
         _loadNovels();
       }
     } catch (e) {
-      _showErrorSnackBar('PDF içe aktarılamadı: $e');
+      if (!mounted) return;
+      _showErrorSnackBar(
+          AppLocalizations.of(context)!.pdfImportFailed(e.toString()));
     } finally {
+      if (!mounted) return;
       setState(() {
         _isImporting = false;
       });
@@ -95,25 +105,25 @@ class _NovelsPageState extends State<NovelsPage> {
         backgroundColor: themeProvider.cardColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: Text(
-          'Romanı Sil',
+          AppLocalizations.of(context)!.deleteNovelTitle,
           style: TextStyle(
             fontWeight: FontWeight.w600,
             color: themeProvider.textPrimaryColor,
           ),
         ),
         content: Text(
-          '"${novel.title}" romanını silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.',
+          AppLocalizations.of(context)!.deleteNovelConfirmation(novel.title),
           style: TextStyle(color: themeProvider.textSecondaryColor),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: Text('İptal',
+            child: Text(AppLocalizations.of(context)!.cancel,
                 style: TextStyle(color: themeProvider.textTertiaryColor)),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: Text('Sil',
+            child: Text(AppLocalizations.of(context)!.delete,
                 style: TextStyle(
                     color: Colors.red[600], fontWeight: FontWeight.w600)),
           ),
@@ -125,9 +135,10 @@ class _NovelsPageState extends State<NovelsPage> {
       try {
         await NovelService.deleteNovel(novel.id);
         _loadNovels();
-        _showSuccessSnackBar('Roman silindi');
+        _showSuccessSnackBar(AppLocalizations.of(context)!.novelDeleted);
       } catch (e) {
-        _showErrorSnackBar('Roman silinemedi: $e');
+        _showErrorSnackBar(
+            AppLocalizations.of(context)!.novelCouldNotBeDeleted(e.toString()));
       }
     }
   }
@@ -176,7 +187,7 @@ class _NovelsPageState extends State<NovelsPage> {
           ),
           SizedBox(height: 32),
           Text(
-            'Henüz Roman Yok',
+            AppLocalizations.of(context)!.noNovelsYet,
             style: TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.w700,
@@ -186,7 +197,7 @@ class _NovelsPageState extends State<NovelsPage> {
           ),
           SizedBox(height: 16),
           Text(
-            'PDF dosyalarını içe aktararak roman okumaya başlayın',
+            AppLocalizations.of(context)!.importPdfToStartReading,
             style: TextStyle(
               fontSize: 16,
               color: themeProvider.textSecondaryColor,
@@ -220,7 +231,9 @@ class _NovelsPageState extends State<NovelsPage> {
                     )
                   : Icon(Icons.upload_file, color: Colors.white),
               label: Text(
-                _isImporting ? 'İçe Aktarılıyor...' : 'PDF İçe Aktar',
+                _isImporting
+                    ? AppLocalizations.of(context)!.importing
+                    : AppLocalizations.of(context)!.importPdf,
                 style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.w600,
@@ -302,7 +315,10 @@ class _NovelsPageState extends State<NovelsPage> {
                           ),
                           SizedBox(height: 4),
                           Text(
-                            '${novel.chapters.length} bölüm • ${novel.totalReadingTime}',
+                            AppLocalizations.of(context)!
+                                .chaptersAndReadingTime(
+                                    novel.chapters.length.toString(),
+                                    novel.totalReadingTime),
                             style: TextStyle(
                               fontSize: 14,
                               color: themeProvider.textSecondaryColor,
@@ -329,7 +345,7 @@ class _NovelsPageState extends State<NovelsPage> {
                             children: [
                               Icon(Icons.delete, color: Colors.red[600]),
                               SizedBox(width: 8),
-                              Text('Sil'),
+                              Text(AppLocalizations.of(context)!.delete),
                             ],
                           ),
                         ),
@@ -356,7 +372,8 @@ class _NovelsPageState extends State<NovelsPage> {
                     ),
                     Spacer(),
                     Text(
-                      '${(progress * 100).toInt()}% tamamlandı',
+                      AppLocalizations.of(context)!.percentCompleted(
+                          (progress * 100).toInt().toString()),
                       style: TextStyle(
                         fontSize: 13,
                         color: themeProvider.textTertiaryColor,
@@ -398,7 +415,7 @@ class _NovelsPageState extends State<NovelsPage> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: Text(
-          'Romanlar',
+          AppLocalizations.of(context)!.novels,
           style: TextStyle(
             color: themeProvider.textPrimaryColor,
             fontWeight: FontWeight.w700,
@@ -454,7 +471,8 @@ class _NovelsPageState extends State<NovelsPage> {
                           style:
                               TextStyle(color: themeProvider.textPrimaryColor),
                           decoration: InputDecoration(
-                            hintText: 'Roman ara...',
+                            hintText:
+                                AppLocalizations.of(context)!.searchNovels,
                             hintStyle: TextStyle(
                                 color: themeProvider.textTertiaryColor),
                             prefixIcon: Icon(Icons.search,
@@ -468,7 +486,7 @@ class _NovelsPageState extends State<NovelsPage> {
                       child: _filteredNovels.isEmpty
                           ? Center(
                               child: Text(
-                                'Arama sonucu bulunamadı',
+                                AppLocalizations.of(context)!.noSearchResults,
                                 style: TextStyle(
                                   color: themeProvider.textSecondaryColor,
                                   fontSize: 16,

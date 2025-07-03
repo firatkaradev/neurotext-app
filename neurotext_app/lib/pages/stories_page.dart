@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../main.dart';
 import '../models/story.dart';
 import '../services/story_service.dart';
@@ -35,6 +36,7 @@ class _StoriesPageState extends State<StoriesPage> {
       final stories = await StoryService.getAllStories();
       final categories = await StoryService.getAllCategories();
 
+      if (!mounted) return;
       setState(() {
         _stories = stories;
         _filteredStories = stories;
@@ -42,12 +44,14 @@ class _StoriesPageState extends State<StoriesPage> {
         _isLoading = false;
       });
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         _isLoading = false;
       });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Hikayeler yüklenemedi: $e'),
+          content: Text(AppLocalizations.of(context)!
+              .storiesCouldNotBeLoaded(e.toString())),
           backgroundColor: Colors.red[600],
           behavior: SnackBarBehavior.floating,
           shape:
@@ -58,6 +62,7 @@ class _StoriesPageState extends State<StoriesPage> {
   }
 
   void _filterStories() {
+    if (!mounted) return;
     final query = _searchController.text.toLowerCase();
     setState(() {
       _filteredStories = _stories.where((story) {
@@ -74,6 +79,7 @@ class _StoriesPageState extends State<StoriesPage> {
   }
 
   void _onCategoryChanged(String category) {
+    if (!mounted) return;
     setState(() {
       _selectedCategory = category;
     });
@@ -89,18 +95,36 @@ class _StoriesPageState extends State<StoriesPage> {
     );
   }
 
-  String _getRelativeTime(DateTime dateTime) {
+  String _getRelativeTime(DateTime dateTime, BuildContext context) {
     final now = DateTime.now();
     final difference = now.difference(dateTime);
 
     if (difference.inDays > 0) {
-      return '${difference.inDays} gün önce';
+      return AppLocalizations.of(context)!
+          .daysAgo(difference.inDays.toString());
     } else if (difference.inHours > 0) {
-      return '${difference.inHours} saat önce';
+      return AppLocalizations.of(context)!
+          .hoursAgo(difference.inHours.toString());
     } else if (difference.inMinutes > 0) {
-      return '${difference.inMinutes} dakika önce';
+      return AppLocalizations.of(context)!
+          .minutesAgo(difference.inMinutes.toString());
     } else {
-      return 'Az önce';
+      return AppLocalizations.of(context)!.justNow;
+    }
+  }
+
+  String _getCategoryTranslation(String category, BuildContext context) {
+    switch (category) {
+      case 'Klasik Masallar':
+        return AppLocalizations.of(context)!.classicTales;
+      case 'Klasik Hikayeler':
+        return AppLocalizations.of(context)!.classicStories;
+      case 'Modern Masallar':
+        return AppLocalizations.of(context)!.modernTales;
+      case 'Tümü':
+        return AppLocalizations.of(context)!.all;
+      default:
+        return category;
     }
   }
 
@@ -156,7 +180,7 @@ class _StoriesPageState extends State<StoriesPage> {
           ),
           SizedBox(height: 32),
           Text(
-            'Henüz Hikaye Yok',
+            AppLocalizations.of(context)!.noStoriesYet,
             style: TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.w700,
@@ -166,7 +190,7 @@ class _StoriesPageState extends State<StoriesPage> {
           ),
           SizedBox(height: 12),
           Text(
-            'Klasik hikayeler kütüphanesi\nhenüz yüklenmemiş',
+            AppLocalizations.of(context)!.storiesLibraryNotLoaded,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 16,
@@ -789,7 +813,8 @@ class _StoriesPageState extends State<StoriesPage> {
                                                               Text(
                                                                 _getRelativeTime(
                                                                     story
-                                                                        .createdAt),
+                                                                        .createdAt,
+                                                                    context),
                                                                 style:
                                                                     TextStyle(
                                                                   color: themeProvider
