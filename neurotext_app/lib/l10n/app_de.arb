@@ -1,8 +1,8 @@
 {
   "@@locale": "de",
   "appTitle": "Neuro Text Reader",
-  "homeTitle": "Neuro Text",
-  "homeSubtitle": "{count} Artikel • Erweiteres Lesen",
+  "homeTitle": "Neuro",
+  "homeSubtitle": "{count} Artikel",
   "lightMode": "Heller Modus",
   "darkMode": "Dunkler Modus",
   "deleteAll": "Alle Löschen",

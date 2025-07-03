@@ -1,8 +1,8 @@
 {
   "@@locale": "tr",
   "appTitle": "Neuro Text Reader",
-  "homeTitle": "Neuro Text",
-  "homeSubtitle": "{count} Makale • Gelişmiş Okuma",
+  "homeTitle": "Neuro",
+  "homeSubtitle": "{count} makale",
   "lightMode": "Açık Mod",
   "darkMode": "Karanlık Mod",
   "deleteAll": "Tümünü Sil",
