@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 import '../models/reading_stats.dart';
 
@@ -9,7 +10,7 @@ class StatsService {
     try {
       _statsBox = await Hive.openBox<ReadingStats>(_boxName);
     } catch (e) {
-      print('Error initializing stats box: $e');
+      if (kDebugMode) print('Error initializing stats box: $e');
     }
   }
 
@@ -56,7 +57,7 @@ class StatsService {
         await _box.put(today, newStats);
       }
     } catch (e) {
-      print('Error adding reading session: $e');
+      if (kDebugMode) print('Error adding reading session: $e');
     }
   }
 
@@ -86,7 +87,7 @@ class StatsService {
     try {
       return _box.get(ReadingStats.todayKey());
     } catch (e) {
-      print('Error getting today stats: $e');
+      if (kDebugMode) print('Error getting today stats: $e');
       return null;
     }
   }
@@ -108,7 +109,7 @@ class StatsService {
       }
       return stats;
     } catch (e) {
-      print('Error getting week stats: $e');
+      if (kDebugMode) print('Error getting week stats: $e');
       return [];
     }
   }
@@ -130,7 +131,7 @@ class StatsService {
       }
       return stats;
     } catch (e) {
-      print('Error getting month stats: $e');
+      if (kDebugMode) print('Error getting month stats: $e');
       return [];
     }
   }
@@ -154,7 +155,7 @@ class StatsService {
       }
       return streak;
     } catch (e) {
-      print('Error calculating reading streak: $e');
+      if (kDebugMode) print('Error calculating reading streak: $e');
       return 0;
     }
   }
@@ -187,7 +188,7 @@ class StatsService {
         'totalDays': totalDays,
       };
     } catch (e) {
-      print('Error getting total stats: $e');
+      if (kDebugMode) print('Error getting total stats: $e');
       return {
         'totalMinutes': 0,
         'totalWords': 0,
@@ -204,7 +205,7 @@ class StatsService {
     try {
       await _box.clear();
     } catch (e) {
-      print('Error clearing stats: $e');
+      if (kDebugMode) print('Error clearing stats: $e');
     }
   }
 }

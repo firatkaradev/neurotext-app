@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../l10n/app_localizations.dart';
 import '../models/article.dart';
 import '../services/article_service.dart';
 import '../main.dart';
 import 'add_text_page.dart';
 import 'text_reader_page.dart';
-import 'stats_page.dart';
+
 import 'settings_page.dart';
 import 'stories_page.dart';
 import 'novels_page.dart';
 
 class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -36,7 +38,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _loadArticles() async {
     try {
-      final articles = await ArticleService.getAllArticles();
+      final articles = ArticleService.getAllArticles();
       if (!mounted) return;
       setState(() {
         _articles = articles;
@@ -939,14 +941,14 @@ class _HomePageState extends State<HomePage> {
         ),
         child: FloatingActionButton(
           onPressed: _openAddTextPage,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          tooltip: 'Yeni Metin Ekle',
           child: Icon(
             Icons.add,
             size: 28,
             color: Colors.white,
           ),
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          tooltip: 'Yeni Metin Ekle',
         ),
       ),
     );

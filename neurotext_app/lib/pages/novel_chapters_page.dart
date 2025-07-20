@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter/foundation.dart';
+import '../l10n/app_localizations.dart';
 import '../models/novel.dart';
 import '../services/novel_service.dart';
 import '../main.dart';
@@ -8,7 +9,7 @@ import 'text_reader_page.dart';
 class NovelChaptersPage extends StatefulWidget {
   final Novel novel;
 
-  const NovelChaptersPage({Key? key, required this.novel}) : super(key: key);
+  const NovelChaptersPage({super.key, required this.novel});
 
   @override
   _NovelChaptersPageState createState() => _NovelChaptersPageState();
@@ -57,7 +58,7 @@ class _NovelChaptersPageState extends State<NovelChaptersPage> {
       await NovelService.markChapterAsRead(_novel.id, chapter.id);
       await _refreshNovel();
     } catch (e) {
-      print('Error marking chapter as read: $e');
+      if (kDebugMode) print('Error marking chapter as read: $e');
     }
   }
 

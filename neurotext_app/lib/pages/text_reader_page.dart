@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../l10n/app_localizations.dart';
 import '../main.dart';
 import '../models/article.dart';
 import '../services/article_service.dart';
@@ -9,7 +9,7 @@ import '../services/stats_service.dart';
 class TextReaderPage extends StatefulWidget {
   final String? initialText;
 
-  const TextReaderPage({Key? key, this.initialText}) : super(key: key);
+  const TextReaderPage({super.key, this.initialText});
 
   @override
   _TextReaderPageState createState() => _TextReaderPageState();
@@ -33,7 +33,6 @@ class _TextReaderPageState extends State<TextReaderPage> {
 
   // Reading tracking
   DateTime? _sessionStartTime;
-  DateTime? _lastActiveTime;
 
   @override
   void initState() {
@@ -58,19 +57,14 @@ class _TextReaderPageState extends State<TextReaderPage> {
 
   void _setupScrollController() {
     _scrollController.addListener(() {
-      // Scroll position değişimi algılama
-      if (_scrollController.position.activity != null) {
-        final activity = _scrollController.position.activity!;
-
-        // Eğer kullanıcı scroll yapıyorsa (otomatik scroll değil)
-        if (activity is DragScrollActivity ||
-            activity is BallisticScrollActivity) {
-          if (_isAutoScrolling && !_isManualScrolling) {
-            setState(() {
-              _isManualScrolling = true;
-            });
-          }
-        }
+      // Manuel scroll algılama
+      if (_scrollController.hasClients &&
+          _isAutoScrolling &&
+          !_isManualScrolling) {
+        // Basit kontrol - herhangi bir scroll değişikliği algılandığında manuel scroll olarak işaretle
+        setState(() {
+          _isManualScrolling = true;
+        });
       }
     });
   }
@@ -233,7 +227,6 @@ class _TextReaderPageState extends State<TextReaderPage> {
   void _startReadingSession() {
     if (_displayText.trim().isNotEmpty) {
       _sessionStartTime = DateTime.now();
-      _lastActiveTime = DateTime.now();
     }
   }
 
@@ -671,7 +664,7 @@ class NeuroTextWidget extends StatelessWidget {
       final word = words[i];
 
       // Kelime genişliğini hesapla
-      painter.text = TextSpan(text: word + ' ', style: textStyle);
+      painter.text = TextSpan(text: '$word ', style: textStyle);
       painter.layout();
       final wordWidth = painter.width;
 

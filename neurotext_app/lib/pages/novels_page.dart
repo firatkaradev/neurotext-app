@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../l10n/app_localizations.dart';
 import '../models/novel.dart';
 import '../services/novel_service.dart';
 import '../main.dart';
 import 'novel_chapters_page.dart';
 
 class NovelsPage extends StatefulWidget {
+  const NovelsPage({super.key});
+
   @override
   _NovelsPageState createState() => _NovelsPageState();
 }
@@ -78,10 +80,11 @@ class _NovelsPageState extends State<NovelsPage> {
       _showErrorSnackBar(
           AppLocalizations.of(context)!.pdfImportFailed(e.toString()));
     } finally {
-      if (!mounted) return;
-      setState(() {
-        _isImporting = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isImporting = false;
+        });
+      }
     }
   }
 

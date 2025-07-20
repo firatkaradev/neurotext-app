@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../l10n/app_localizations.dart';
 import '../main.dart';
 import 'text_reader_page.dart';
 
 class AddTextPage extends StatefulWidget {
   final String? initialText;
 
-  const AddTextPage({Key? key, this.initialText}) : super(key: key);
+  const AddTextPage({super.key, this.initialText});
 
   @override
-  _AddTextPageState createState() => _AddTextPageState();
+  AddTextPageState createState() => AddTextPageState();
 }
 
-class _AddTextPageState extends State<AddTextPage> {
+class AddTextPageState extends State<AddTextPage> {
   final TextEditingController _controller = TextEditingController();
   bool _isTextEmpty = true;
   bool _hasClipboardContent = false;
@@ -51,13 +51,17 @@ class _AddTextPageState extends State<AddTextPage> {
   Future<void> _checkClipboard() async {
     try {
       final clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
-      setState(() {
-        _hasClipboardContent = clipboardData?.text?.trim().isNotEmpty == true;
-      });
+      if (mounted) {
+        setState(() {
+          _hasClipboardContent = clipboardData?.text?.trim().isNotEmpty == true;
+        });
+      }
     } catch (e) {
-      setState(() {
-        _hasClipboardContent = false;
-      });
+      if (mounted) {
+        setState(() {
+          _hasClipboardContent = false;
+        });
+      }
     }
   }
 
@@ -67,15 +71,17 @@ class _AddTextPageState extends State<AddTextPage> {
       final clipboardText = clipboardData?.text?.trim() ?? '';
 
       if (clipboardText.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.noTextInClipboard),
-            backgroundColor: Colors.orange[600],
-            behavior: SnackBarBehavior.floating,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          ),
-        );
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(AppLocalizations.of(context)!.noTextInClipboard),
+              backgroundColor: Colors.orange[600],
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
+            ),
+          );
+        }
         return;
       }
 
@@ -90,7 +96,7 @@ class _AddTextPageState extends State<AddTextPage> {
       final shouldPaste = await showDialog<bool>(
         context: context,
         builder: (context) => AlertDialog(
-          backgroundColor: Colors.white.withOpacity(0.95),
+          backgroundColor: Colors.white.withValues(alpha: 0.95),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           title: Row(
@@ -221,7 +227,7 @@ class _AddTextPageState extends State<AddTextPage> {
         ),
       );
 
-      if (shouldPaste == true) {
+      if (shouldPaste == true && mounted) {
         setState(() {
           _controller.text = clipboardText;
         });
@@ -237,15 +243,17 @@ class _AddTextPageState extends State<AddTextPage> {
         );
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Pano okunamadı: $e'),
-          backgroundColor: Colors.red[600],
-          behavior: SnackBarBehavior.floating,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Pano okunamadı: $e'),
+            backgroundColor: Colors.red[600],
+            behavior: SnackBarBehavior.floating,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ),
+        );
+      }
     }
   }
 
@@ -275,7 +283,7 @@ class _AddTextPageState extends State<AddTextPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: Colors.white.withOpacity(0.95),
+        backgroundColor: Colors.white.withValues(alpha: 0.95),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: Text(AppLocalizations.of(context)!.clearTextTitle,
             style: TextStyle(fontWeight: FontWeight.w600)),
@@ -326,10 +334,10 @@ class _AddTextPageState extends State<AddTextPage> {
                       width: 40,
                       height: 40,
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
+                        color: Colors.white.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(12),
-                        border:
-                            Border.all(color: Colors.white.withOpacity(0.3)),
+                        border: Border.all(
+                            color: Colors.white.withValues(alpha: 0.3)),
                       ),
                       child: IconButton(
                         icon: Icon(Icons.arrow_back,
@@ -356,7 +364,7 @@ class _AddTextPageState extends State<AddTextPage> {
                             AppLocalizations.of(context)!.writeTextHere,
                             style: TextStyle(
                               fontSize: 14,
-                              color: Colors.white.withOpacity(0.8),
+                              color: Colors.white.withValues(alpha: 0.8),
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -376,7 +384,7 @@ class _AddTextPageState extends State<AddTextPage> {
                           borderRadius: BorderRadius.circular(12),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.purple[300]!.withOpacity(0.3),
+                              color: Colors.purple[300]!.withValues(alpha: 0.3),
                               blurRadius: 8,
                               offset: Offset(0, 4),
                             ),
@@ -394,10 +402,10 @@ class _AddTextPageState extends State<AddTextPage> {
                       Container(
                         margin: EdgeInsets.only(right: 8),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
+                          color: Colors.white.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(12),
-                          border:
-                              Border.all(color: Colors.white.withOpacity(0.3)),
+                          border: Border.all(
+                              color: Colors.white.withValues(alpha: 0.3)),
                         ),
                         child: IconButton(
                           onPressed: _clearText,
@@ -416,7 +424,7 @@ class _AddTextPageState extends State<AddTextPage> {
                           borderRadius: BorderRadius.circular(12),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.green[300]!.withOpacity(0.3),
+                              color: Colors.green[300]!.withValues(alpha: 0.3),
                               blurRadius: 8,
                               offset: Offset(0, 4),
                             ),
@@ -457,8 +465,9 @@ class _AddTextPageState extends State<AddTextPage> {
                             borderRadius: BorderRadius.circular(20),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(
-                                    themeProvider.isDarkMode ? 0.2 : 0.05),
+                                color: Colors.black.withValues(
+                                    alpha:
+                                        themeProvider.isDarkMode ? 0.2 : 0.05),
                                 blurRadius: 20,
                                 offset: Offset(0, 5),
                               ),
@@ -524,7 +533,8 @@ class _AddTextPageState extends State<AddTextPage> {
                                       padding: EdgeInsets.all(12),
                                       decoration: BoxDecoration(
                                         color: themeProvider.isDarkMode
-                                            ? Colors.blue[900]!.withOpacity(0.3)
+                                            ? Colors.blue[900]!
+                                                .withValues(alpha: 0.3)
                                             : Colors.blue[50],
                                         borderRadius: BorderRadius.circular(12),
                                       ),
@@ -554,7 +564,7 @@ class _AddTextPageState extends State<AddTextPage> {
                                       decoration: BoxDecoration(
                                         color: themeProvider.isDarkMode
                                             ? Colors.purple[900]!
-                                                .withOpacity(0.3)
+                                                .withValues(alpha: 0.3)
                                             : Colors.purple[50],
                                         borderRadius: BorderRadius.circular(12),
                                       ),
@@ -584,7 +594,7 @@ class _AddTextPageState extends State<AddTextPage> {
                                       decoration: BoxDecoration(
                                         color: themeProvider.isDarkMode
                                             ? Colors.green[900]!
-                                                .withOpacity(0.3)
+                                                .withValues(alpha: 0.3)
                                             : Colors.green[50],
                                         borderRadius: BorderRadius.circular(12),
                                       ),
@@ -623,8 +633,10 @@ class _AddTextPageState extends State<AddTextPage> {
                               borderRadius: BorderRadius.circular(20),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withOpacity(
-                                      themeProvider.isDarkMode ? 0.2 : 0.05),
+                                  color: Colors.black.withValues(
+                                      alpha: themeProvider.isDarkMode
+                                          ? 0.2
+                                          : 0.05),
                                   blurRadius: 20,
                                   offset: Offset(0, 5),
                                 ),
@@ -674,7 +686,7 @@ class _AddTextPageState extends State<AddTextPage> {
                                         boxShadow: [
                                           BoxShadow(
                                             color: Colors.purple[200]!
-                                                .withOpacity(0.5),
+                                                .withValues(alpha: 0.5),
                                             blurRadius: 15,
                                             offset: Offset(0, 5),
                                           ),
@@ -727,8 +739,10 @@ class _AddTextPageState extends State<AddTextPage> {
                               borderRadius: BorderRadius.circular(16),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withOpacity(
-                                      themeProvider.isDarkMode ? 0.2 : 0.05),
+                                  color: Colors.black.withValues(
+                                      alpha: themeProvider.isDarkMode
+                                          ? 0.2
+                                          : 0.05),
                                   blurRadius: 15,
                                   offset: Offset(0, 3),
                                 ),
@@ -743,7 +757,8 @@ class _AddTextPageState extends State<AddTextPage> {
                                       horizontal: 12, vertical: 8),
                                   decoration: BoxDecoration(
                                     color: themeProvider.isDarkMode
-                                        ? Colors.blue[900]!.withOpacity(0.3)
+                                        ? Colors.blue[900]!
+                                            .withValues(alpha: 0.3)
                                         : Colors.blue[50],
                                     borderRadius: BorderRadius.circular(12),
                                   ),
@@ -770,7 +785,8 @@ class _AddTextPageState extends State<AddTextPage> {
                                       horizontal: 12, vertical: 8),
                                   decoration: BoxDecoration(
                                     color: themeProvider.isDarkMode
-                                        ? Colors.purple[900]!.withOpacity(0.3)
+                                        ? Colors.purple[900]!
+                                            .withValues(alpha: 0.3)
                                         : Colors.purple[50],
                                     borderRadius: BorderRadius.circular(12),
                                   ),
@@ -799,7 +815,8 @@ class _AddTextPageState extends State<AddTextPage> {
                                       horizontal: 12, vertical: 8),
                                   decoration: BoxDecoration(
                                     color: themeProvider.isDarkMode
-                                        ? Colors.green[900]!.withOpacity(0.3)
+                                        ? Colors.green[900]!
+                                            .withValues(alpha: 0.3)
                                         : Colors.green[50],
                                     borderRadius: BorderRadius.circular(12),
                                   ),
@@ -847,7 +864,7 @@ class _AddTextPageState extends State<AddTextPage> {
                                       color: (themeProvider.isDarkMode
                                               ? Colors.purple[300]!
                                               : Colors.blue[300]!)
-                                          .withOpacity(0.4),
+                                          .withValues(alpha: 0.4),
                                       blurRadius: 20,
                                       offset: Offset(0, 8),
                                     ),

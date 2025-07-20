@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../l10n/app_localizations.dart';
 import '../main.dart';
 import '../models/story.dart';
 import '../services/story_service.dart';
 import 'text_reader_page.dart';
 
 class StoriesPage extends StatefulWidget {
+  const StoriesPage({super.key});
+
   @override
   _StoriesPageState createState() => _StoriesPageState();
 }
@@ -110,21 +112,6 @@ class _StoriesPageState extends State<StoriesPage> {
           .minutesAgo(difference.inMinutes.toString());
     } else {
       return AppLocalizations.of(context)!.justNow;
-    }
-  }
-
-  String _getCategoryTranslation(String category, BuildContext context) {
-    switch (category) {
-      case 'Klasik Masallar':
-        return AppLocalizations.of(context)!.classicTales;
-      case 'Klasik Hikayeler':
-        return AppLocalizations.of(context)!.classicStories;
-      case 'Modern Masallar':
-        return AppLocalizations.of(context)!.modernTales;
-      case 'Tümü':
-        return AppLocalizations.of(context)!.all;
-      default:
-        return category;
     }
   }
 

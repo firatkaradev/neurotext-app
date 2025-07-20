@@ -1,6 +1,5 @@
 import '../services/stats_service.dart';
 import '../services/article_service.dart';
-import '../models/reading_stats.dart';
 
 class Achievement {
   final String id;
@@ -846,7 +845,6 @@ class AchievementsService {
 
   static Future<Map<String, dynamic>> getUserStats() async {
     try {
-      final todayStats = StatsService.getTodayStats();
       final weekStats = StatsService.getThisWeekStats();
       final monthStats = StatsService.getThisMonthStats();
       final totalStats = StatsService.getTotalStats();
@@ -855,7 +853,7 @@ class AchievementsService {
       // Get article count from ArticleService
       int savedArticleCount = 0;
       try {
-        final articles = await ArticleService.getAllArticles();
+        final articles = ArticleService.getAllArticles();
         savedArticleCount = articles.length;
       } catch (e) {
         savedArticleCount = 0;

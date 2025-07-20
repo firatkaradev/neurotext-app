@@ -61,7 +61,6 @@ class NovelService {
       String extractedText = '';
 
       for (int i = 0; i < document.pages.count; i++) {
-        final PdfPage page = document.pages[i];
         extractedText += PdfTextExtractor(document)
             .extractText(startPageIndex: i, endPageIndex: i);
         extractedText += '\n\n'; // Add space between pages
@@ -134,7 +133,7 @@ class NovelService {
           final chapter = NovelChapter(
             id: _uuid.v4(),
             title: 'Bölüm $chapterNumber',
-            content: currentChapterText + '.',
+            content: '$currentChapterText.',
             chapterNumber: chapterNumber,
           );
 
@@ -151,7 +150,7 @@ class NovelService {
       final chapter = NovelChapter(
         id: _uuid.v4(),
         title: 'Bölüm $chapterNumber',
-        content: currentChapterText + '.',
+        content: '$currentChapterText.',
         chapterNumber: chapterNumber,
       );
       chapters.add(chapter);

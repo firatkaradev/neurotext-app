@@ -11,7 +11,7 @@ import 'services/story_service.dart';
 import 'services/novel_service.dart';
 import 'pages/home_page.dart';
 import 'pages/onboarding_page.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,6 +39,8 @@ void main() async {
 }
 
 class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
   @override
   _MyAppState createState() => _MyAppState();
 }
@@ -128,7 +130,7 @@ class _MyAppState extends State<MyApp> {
                   width: 60,
                   height: 60,
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
+                    color: Colors.white.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(30),
                   ),
                   child: CircularProgressIndicator(
@@ -172,7 +174,7 @@ class LocaleService {
 class ThemeProvider extends StatefulWidget {
   final Widget child;
 
-  const ThemeProvider({Key? key, required this.child}) : super(key: key);
+  const ThemeProvider({super.key, required this.child});
 
   @override
   _ThemeProviderState createState() => _ThemeProviderState();

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import '../main.dart';
 import '../services/stats_service.dart';
 import '../services/achievements_service.dart';
 import '../models/reading_stats.dart';
 
 class StatsPage extends StatefulWidget {
+  const StatsPage({super.key});
+
   @override
   _StatsPageState createState() => _StatsPageState();
 }
@@ -14,7 +16,6 @@ class _StatsPageState extends State<StatsPage> with TickerProviderStateMixin {
   late TabController _tabController;
   ReadingStats? _todayStats;
   List<ReadingStats> _weekStats = [];
-  List<ReadingStats> _monthStats = [];
   Map<String, int> _totalStats = {};
   int _readingStreak = 0;
 
@@ -35,7 +36,6 @@ class _StatsPageState extends State<StatsPage> with TickerProviderStateMixin {
     setState(() {
       _todayStats = StatsService.getTodayStats();
       _weekStats = StatsService.getThisWeekStats();
-      _monthStats = StatsService.getThisMonthStats();
       _totalStats = StatsService.getTotalStats();
       _readingStreak = StatsService.getReadingStreak();
     });
@@ -249,7 +249,6 @@ class _StatsPageState extends State<StatsPage> with TickerProviderStateMixin {
   }
 
   Widget _buildTodayTab() {
-    final themeProvider = ThemeProvider.of(context)!;
     final todayMinutes = _todayStats?.readingTimeMinutes ?? 0;
     final todayWords = _todayStats?.wordsRead ?? 0;
     final todayArticles = _todayStats?.articlesRead ?? 0;
